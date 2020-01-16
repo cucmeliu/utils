@@ -1,0 +1,20 @@
+# 日志
+LOG:
+    LOG_FORMAT: '%(asctime)s - %(levelname)s - %(message)s'
+    DATE_FORMAT: '%m/%d/%Y %H:%M:%S %p'
+    LOG_PATH: '.\'
+
+# 数据库
+DB:
+    HOST:  172.16.0.52
+    USER: query01
+    PWD:  query01
+    DB: school
+    SQL: SELECT ID as 学号, NAME as 姓名, AGE as 年龄, GENDER as 性别 FROM STUDENT;    
+
+# 导出的Excel
+EXCEL:
+    SHEET_NAME: '学生信息'
+    OUT_PATH: 'D:\'
+    FILE_BASE: 'STUDENT_'
+    
