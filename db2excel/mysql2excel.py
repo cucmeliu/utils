@@ -9,6 +9,8 @@ import logging
 import yaml
 import traceback
 
+# pyinstaller -F filename.py 打包生成 exe
+
 f = open('Conf.yaml', encoding='utf-8')
 conf = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -72,7 +74,7 @@ try:
     i = 2  # 注意：'cell'函数中行列起始值为1
     for line in results:  
         for x in range(0,len(line)):  	     
-            outws.cell(column = x+1 , row = i , value = "%s" % line[x])  
+            outws.cell(column = x+1 , row = i , value = line[x])  
         i += 1  
 
     outwb.save(out_path)

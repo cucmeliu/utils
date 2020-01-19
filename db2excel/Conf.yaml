@@ -1,4 +1,4 @@
-# 日志
+﻿# 日志
 LOG:
     LOG_FORMAT: '%(asctime)s - %(levelname)s - %(message)s'
     DATE_FORMAT: '%m/%d/%Y %H:%M:%S %p'
@@ -6,11 +6,11 @@ LOG:
 
 # 数据库
 DB:
-    HOST:  172.16.0.52
-    USER: query01
-    PWD:  query01
-    DB: school
-    SQL: SELECT ID as 学号, NAME as 姓名, AGE as 年龄, GENDER as 性别 FROM STUDENT;    
+    HOST:  192.168.16.3
+    USER: root
+    PWD:  root
+    DB: Student
+    SQL: SELECT StudentNo as 学号, StudentName as 姓名, Age as 年龄, dob as 生日 FROM Student;    
 
 # 导出的Excel
 EXCEL:
