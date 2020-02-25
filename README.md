@@ -7,6 +7,9 @@
 将MySQL的查询结果转存到Excel
 
 
+## officeThinner
+Office2016 Mac版瘦身的脚本
+
 
 Leo.Liu
 2020/01/16
