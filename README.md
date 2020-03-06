@@ -11,5 +11,9 @@
 Office2016 Mac版瘦身的脚本
 
 
+## del_tree
+Windows环境，删除一个文件夹及其子文件夹的所有内容
+
+
 Leo.Liu
 2020/01/16
