@@ -1,0 +1,442 @@
+03/21/2020 22:56:05 PM - INFO - starting...
+03/21/2020 22:56:05 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 22:56:05 PM - INFO - connect to database 
+03/21/2020 22:56:05 PM - INFO - Query: SELECT PROJECT_ID, PERIOD, over_day_count from tmp_overdue;
+03/21/2020 22:57:03 PM - INFO - starting...
+03/21/2020 22:57:03 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 22:57:03 PM - INFO - connect to database 
+03/21/2020 22:57:03 PM - INFO - Query: SELECT PROJECT_ID, PERIOD, over_day_count from tmp_overdue;
+03/21/2020 22:57:03 PM - INFO - read from table 
+03/21/2020 22:57:03 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 51, in <module>
+    count = cursor.execute(sql)
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/pymysql/cursors.py", line 170, in execute
+    result = self._query(query)
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/pymysql/cursors.py", line 328, in _query
+    conn.query(q)
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/pymysql/connections.py", line 517, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/pymysql/connections.py", line 732, in _read_query_result
+    result.read()
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/pymysql/connections.py", line 1075, in read
+    first_packet = self.connection._read_packet()
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/pymysql/connections.py", line 684, in _read_packet
+    packet.check_error()
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/pymysql/protocol.py", line 220, in check_error
+    err.raise_mysql_exception(self._data)
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/pymysql/err.py", line 109, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.InternalError: (1054, "Unknown column 'PROJECT_ID' in 'field list'")
+
+03/21/2020 22:57:03 PM - INFO - closeing database 
+03/21/2020 22:57:03 PM - INFO - closeing database: done 
+03/21/2020 22:58:31 PM - INFO - starting...
+03/21/2020 22:58:31 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 22:58:31 PM - INFO - connect to database 
+03/21/2020 22:58:31 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 22:58:31 PM - INFO - read from table 
+03/21/2020 22:58:31 PM - INFO - read from table count: 
+03/21/2020 22:58:31 PM - INFO - 6536
+03/21/2020 22:58:31 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 97, in <module>
+    last_str = last_str[1, len(last_str)]
+TypeError: string indices must be integers
+
+03/21/2020 22:58:31 PM - INFO - closeing database 
+03/21/2020 22:58:31 PM - INFO - closeing database: done 
+03/21/2020 23:07:42 PM - INFO - starting...
+03/21/2020 23:07:42 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:07:42 PM - INFO - connect to database 
+03/21/2020 23:07:42 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:08:10 PM - INFO - starting...
+03/21/2020 23:08:10 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:08:10 PM - INFO - connect to database 
+03/21/2020 23:08:10 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:08:10 PM - INFO - read from table 
+03/21/2020 23:08:10 PM - INFO - read from table count: 
+03/21/2020 23:08:10 PM - INFO - 6536
+03/21/2020 23:08:10 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 97, in <module>
+    last_str = last_str[1, len(last_str)]
+TypeError: string indices must be integers
+
+03/21/2020 23:08:10 PM - INFO - closeing database 
+03/21/2020 23:08:10 PM - INFO - closeing database: done 
+03/21/2020 23:09:07 PM - INFO - starting...
+03/21/2020 23:09:07 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:09:07 PM - INFO - connect to database 
+03/21/2020 23:09:07 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:09:07 PM - INFO - read from table 
+03/21/2020 23:09:07 PM - INFO - read from table count: 
+03/21/2020 23:09:07 PM - INFO - 6536
+03/21/2020 23:09:07 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 98, in <module>
+    last_str = last_str[1, len(last_str)]
+TypeError: string indices must be integers
+
+03/21/2020 23:09:07 PM - INFO - closeing database 
+03/21/2020 23:09:07 PM - INFO - closeing database: done 
+03/21/2020 23:10:13 PM - INFO - starting...
+03/21/2020 23:10:13 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:10:13 PM - INFO - connect to database 
+03/21/2020 23:10:13 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:10:13 PM - INFO - read from table 
+03/21/2020 23:10:13 PM - INFO - read from table count: 
+03/21/2020 23:10:13 PM - INFO - 6536
+03/21/2020 23:10:13 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 98, in <module>
+    last_str = last_str[1, len(last_str)]
+TypeError: string indices must be integers
+
+03/21/2020 23:10:13 PM - INFO - closeing database 
+03/21/2020 23:10:13 PM - INFO - closeing database: done 
+03/21/2020 23:10:56 PM - INFO - starting...
+03/21/2020 23:10:56 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:10:56 PM - INFO - connect to database 
+03/21/2020 23:10:56 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:10:56 PM - INFO - read from table 
+03/21/2020 23:10:56 PM - INFO - read from table count: 
+03/21/2020 23:10:56 PM - INFO - 6536
+03/21/2020 23:10:56 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 99, in <module>
+    last_str = last_str[1, len(last_str)]
+TypeError: string indices must be integers
+
+03/21/2020 23:10:56 PM - INFO - closeing database 
+03/21/2020 23:10:56 PM - INFO - closeing database: done 
+03/21/2020 23:11:52 PM - INFO - starting...
+03/21/2020 23:11:52 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:11:52 PM - INFO - connect to database 
+03/21/2020 23:11:52 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:11:52 PM - INFO - read from table 
+03/21/2020 23:11:52 PM - INFO - read from table count: 
+03/21/2020 23:11:52 PM - INFO - 6536
+03/21/2020 23:11:52 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 99, in <module>
+    print('str len:' + len(last_str))
+TypeError: can only concatenate str (not "int") to str
+
+03/21/2020 23:11:52 PM - INFO - closeing database 
+03/21/2020 23:11:52 PM - INFO - closeing database: done 
+03/21/2020 23:12:29 PM - INFO - starting...
+03/21/2020 23:12:29 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:12:29 PM - INFO - connect to database 
+03/21/2020 23:12:29 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:12:29 PM - INFO - read from table 
+03/21/2020 23:12:30 PM - INFO - read from table count: 
+03/21/2020 23:12:30 PM - INFO - 6536
+03/21/2020 23:12:30 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 101, in <module>
+    last_str = last_str[1, len(last_str)]
+TypeError: string indices must be integers
+
+03/21/2020 23:12:30 PM - INFO - closeing database 
+03/21/2020 23:12:30 PM - INFO - closeing database: done 
+03/21/2020 23:14:53 PM - INFO - starting...
+03/21/2020 23:14:53 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:14:53 PM - INFO - connect to database 
+03/21/2020 23:14:53 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:14:54 PM - INFO - read from table 
+03/21/2020 23:14:54 PM - INFO - read from table count: 
+03/21/2020 23:14:54 PM - INFO - 6536
+03/21/2020 23:14:54 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 75, in <module>
+    for i in Range( len(over_duration_period)-1, i >= 0, i=i-1):
+NameError: name 'Range' is not defined
+
+03/21/2020 23:14:54 PM - INFO - closeing database 
+03/21/2020 23:14:54 PM - INFO - closeing database: done 
+03/21/2020 23:16:08 PM - INFO - starting...
+03/21/2020 23:16:08 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:16:08 PM - INFO - connect to database 
+03/21/2020 23:16:08 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:16:08 PM - INFO - read from table 
+03/21/2020 23:16:08 PM - INFO - read from table count: 
+03/21/2020 23:16:08 PM - INFO - 6536
+03/21/2020 23:16:08 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 80, in <module>
+    for c in range(d):
+TypeError: 'float' object cannot be interpreted as an integer
+
+03/21/2020 23:16:08 PM - INFO - closeing database 
+03/21/2020 23:16:08 PM - INFO - closeing database: done 
+03/21/2020 23:18:13 PM - INFO - starting...
+03/21/2020 23:18:13 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:18:13 PM - INFO - connect to database 
+03/21/2020 23:18:13 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:18:13 PM - INFO - read from table 
+03/21/2020 23:18:13 PM - INFO - read from table count: 
+03/21/2020 23:18:13 PM - INFO - 6536
+03/21/2020 23:18:13 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 80, in <module>
+    for c in range(d):
+TypeError: 'float' object cannot be interpreted as an integer
+
+03/21/2020 23:18:13 PM - INFO - closeing database 
+03/21/2020 23:18:13 PM - INFO - closeing database: done 
+03/21/2020 23:20:03 PM - INFO - starting...
+03/21/2020 23:20:03 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:20:03 PM - INFO - connect to database 
+03/21/2020 23:20:03 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:20:03 PM - INFO - read from table 
+03/21/2020 23:20:04 PM - INFO - read from table count: 
+03/21/2020 23:20:04 PM - INFO - 6536
+03/21/2020 23:20:04 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 79, in <module>
+    for c in range(d):
+TypeError: 'float' object cannot be interpreted as an integer
+
+03/21/2020 23:20:04 PM - INFO - closeing database 
+03/21/2020 23:20:04 PM - INFO - closeing database: done 
+03/21/2020 23:21:04 PM - INFO - starting...
+03/21/2020 23:21:04 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:21:04 PM - INFO - connect to database 
+03/21/2020 23:21:04 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:21:04 PM - INFO - read from table 
+03/21/2020 23:21:05 PM - INFO - read from table count: 
+03/21/2020 23:21:05 PM - INFO - 6536
+03/21/2020 23:21:05 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 81, in <module>
+    for c in range(d):
+TypeError: 'float' object cannot be interpreted as an integer
+
+03/21/2020 23:21:05 PM - INFO - closeing database 
+03/21/2020 23:21:05 PM - INFO - closeing database: done 
+03/21/2020 23:23:24 PM - INFO - starting...
+03/21/2020 23:23:24 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:23:24 PM - INFO - connect to database 
+03/21/2020 23:23:24 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:23:24 PM - INFO - read from table 
+03/21/2020 23:23:24 PM - INFO - read from table count: 
+03/21/2020 23:23:24 PM - INFO - 6536
+03/21/2020 23:23:24 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 81, in <module>
+    for c in range(d):
+TypeError: 'float' object cannot be interpreted as an integer
+
+03/21/2020 23:23:24 PM - INFO - closeing database 
+03/21/2020 23:23:24 PM - INFO - closeing database: done 
+03/21/2020 23:24:12 PM - INFO - starting...
+03/21/2020 23:24:12 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:24:12 PM - INFO - connect to database 
+03/21/2020 23:24:12 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:24:12 PM - INFO - read from table 
+03/21/2020 23:24:13 PM - INFO - read from table count: 
+03/21/2020 23:24:13 PM - INFO - 6536
+03/21/2020 23:24:13 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 81, in <module>
+    for c in range(d):
+TypeError: 'float' object cannot be interpreted as an integer
+
+03/21/2020 23:24:13 PM - INFO - closeing database 
+03/21/2020 23:24:13 PM - INFO - closeing database: done 
+03/21/2020 23:26:07 PM - INFO - starting...
+03/21/2020 23:26:07 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:26:07 PM - INFO - connect to database 
+03/21/2020 23:26:07 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:26:07 PM - INFO - read from table 
+03/21/2020 23:26:07 PM - INFO - read from table count: 
+03/21/2020 23:26:07 PM - INFO - 6536
+03/21/2020 23:26:07 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 81, in <module>
+    for c in range(d):
+TypeError: 'float' object cannot be interpreted as an integer
+
+03/21/2020 23:26:07 PM - INFO - closeing database 
+03/21/2020 23:26:07 PM - INFO - closeing database: done 
+03/21/2020 23:26:45 PM - INFO - starting...
+03/21/2020 23:26:45 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:26:45 PM - INFO - connect to database 
+03/21/2020 23:26:45 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:26:45 PM - INFO - read from table 
+03/21/2020 23:26:45 PM - INFO - read from table count: 
+03/21/2020 23:26:45 PM - INFO - 6536
+03/21/2020 23:26:45 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 98, in <module>
+    over_duration_period.append(int(line[2]) // 30 + 1)  # 最大影响期数
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+
+03/21/2020 23:26:45 PM - INFO - closeing database 
+03/21/2020 23:26:45 PM - INFO - closeing database: done 
+03/21/2020 23:27:50 PM - INFO - starting...
+03/21/2020 23:27:50 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:27:50 PM - INFO - connect to database 
+03/21/2020 23:27:50 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:27:50 PM - INFO - read from table 
+03/21/2020 23:27:51 PM - INFO - read from table count: 
+03/21/2020 23:27:51 PM - INFO - 6536
+03/21/2020 23:27:51 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 96, in <module>
+    over_duration_period.append(int(line[2]) // 30 + 1)  # 最大影响期数
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+
+03/21/2020 23:27:51 PM - INFO - closeing database 
+03/21/2020 23:27:51 PM - INFO - closeing database: done 
+03/21/2020 23:35:13 PM - INFO - starting...
+03/21/2020 23:35:13 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:35:13 PM - INFO - connect to database 
+03/21/2020 23:35:13 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:35:13 PM - INFO - read from table 
+03/21/2020 23:35:13 PM - INFO - read from table count: 
+03/21/2020 23:35:13 PM - INFO - 6536
+03/21/2020 23:35:13 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 96, in <module>
+    over_duration_period.append(int(line[2]) // 30 + 1)  # 最大影响期数
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+
+03/21/2020 23:35:13 PM - INFO - closeing database 
+03/21/2020 23:35:13 PM - INFO - closeing database: done 
+03/21/2020 23:35:21 PM - INFO - starting...
+03/21/2020 23:35:21 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:35:21 PM - INFO - connect to database 
+03/21/2020 23:35:21 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:35:21 PM - INFO - read from table 
+03/21/2020 23:35:22 PM - INFO - read from table count: 
+03/21/2020 23:35:22 PM - INFO - 6536
+03/21/2020 23:35:22 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 96, in <module>
+    over_duration_period.append(int(line[2]) // 30 + 1)  # 最大影响期数
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+
+03/21/2020 23:35:22 PM - INFO - closeing database 
+03/21/2020 23:35:22 PM - INFO - closeing database: done 
+03/21/2020 23:36:09 PM - INFO - starting...
+03/21/2020 23:36:09 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:36:09 PM - INFO - connect to database 
+03/21/2020 23:36:09 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:36:09 PM - INFO - read from table 
+03/21/2020 23:36:09 PM - INFO - read from table count: 
+03/21/2020 23:36:09 PM - INFO - 6536
+03/21/2020 23:36:09 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 96, in <module>
+    over_duration_period.append(int(line[2]) // 30 + 1)  # 最大影响期数
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+
+03/21/2020 23:36:09 PM - INFO - closeing database 
+03/21/2020 23:36:09 PM - INFO - closeing database: done 
+03/21/2020 23:38:24 PM - INFO - starting...
+03/21/2020 23:38:24 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:38:24 PM - INFO - connect to database 
+03/21/2020 23:38:24 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:38:24 PM - INFO - read from table 
+03/21/2020 23:38:24 PM - INFO - read from table count: 
+03/21/2020 23:38:24 PM - INFO - 6536
+03/21/2020 23:38:24 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 75, in <module>
+    d = over_duration_period[i]
+IndexError: list index out of range
+
+03/21/2020 23:38:24 PM - INFO - closeing database 
+03/21/2020 23:38:24 PM - INFO - closeing database: done 
+03/21/2020 23:38:40 PM - INFO - starting...
+03/21/2020 23:38:40 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:38:40 PM - INFO - connect to database 
+03/21/2020 23:38:40 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:38:40 PM - INFO - read from table 
+03/21/2020 23:38:40 PM - INFO - read from table count: 
+03/21/2020 23:38:40 PM - INFO - 6536
+03/21/2020 23:38:40 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 96, in <module>
+    over_duration_period.append(int(line[2]) // 30 + 1)  # 最大影响期数
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+
+03/21/2020 23:38:40 PM - INFO - closeing database 
+03/21/2020 23:38:40 PM - INFO - closeing database: done 
+03/21/2020 23:39:38 PM - INFO - starting...
+03/21/2020 23:39:38 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:39:38 PM - INFO - connect to database 
+03/21/2020 23:39:38 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:39:38 PM - INFO - read from table 
+03/21/2020 23:39:38 PM - INFO - read from table count: 
+03/21/2020 23:39:38 PM - INFO - 6536
+03/21/2020 23:39:38 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 98, in <module>
+    over_duration_period.append(int(line[2]) // 30 + 1)  # 最大影响期数
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+
+03/21/2020 23:39:38 PM - INFO - closeing database 
+03/21/2020 23:39:38 PM - INFO - closeing database: done 
+03/21/2020 23:42:38 PM - INFO - starting...
+03/21/2020 23:42:38 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:42:38 PM - INFO - connect to database 
+03/21/2020 23:42:38 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:42:38 PM - INFO - read from table 
+03/21/2020 23:42:39 PM - INFO - read from table count: 
+03/21/2020 23:42:39 PM - INFO - 6536
+03/21/2020 23:42:39 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 81, in <module>
+    print('project:' + cur_project_id + 'period:' + i + 'status:' + m24_status[c])
+TypeError: can only concatenate str (not "int") to str
+
+03/21/2020 23:42:39 PM - INFO - closeing database 
+03/21/2020 23:42:39 PM - INFO - closeing database: done 
+03/21/2020 23:43:02 PM - INFO - starting...
+03/21/2020 23:43:02 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:43:02 PM - INFO - connect to database 
+03/21/2020 23:43:02 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:43:02 PM - INFO - read from table 
+03/21/2020 23:43:02 PM - INFO - read from table count: 
+03/21/2020 23:43:02 PM - INFO - 6536
+03/21/2020 23:43:02 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 96, in <module>
+    over_duration_period.append(int(line[2]) // 30 + 1)  # 最大影响期数
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+
+03/21/2020 23:43:02 PM - INFO - closeing database 
+03/21/2020 23:43:02 PM - INFO - closeing database: done 
+03/21/2020 23:43:20 PM - INFO - starting...
+03/21/2020 23:43:20 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:43:20 PM - INFO - connect to database 
+03/21/2020 23:43:20 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:43:20 PM - INFO - read from table 
+03/21/2020 23:43:20 PM - INFO - read from table count: 
+03/21/2020 23:43:20 PM - INFO - 6536
+03/21/2020 23:43:20 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 96, in <module>
+    over_duration_period.append(int(line[2]) // 30 + 1)  # 最大影响期数
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+
+03/21/2020 23:43:20 PM - INFO - closeing database 
+03/21/2020 23:43:20 PM - INFO - closeing database: done 
+03/21/2020 23:45:23 PM - INFO - starting...
+03/21/2020 23:45:23 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:45:23 PM - INFO - connect to database 
+03/21/2020 23:45:23 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:45:23 PM - INFO - read from table 
+03/21/2020 23:45:23 PM - INFO - read from table count: 
+03/21/2020 23:45:23 PM - INFO - 6536
+03/21/2020 23:45:23 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 96, in <module>
+    over_duration_period.append(int(line[2]) // 30 + 1)  # 最大影响期数
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+
+03/21/2020 23:45:23 PM - INFO - closeing database 
+03/21/2020 23:45:23 PM - INFO - closeing database: done 
+03/21/2020 23:45:29 PM - INFO - starting...
+03/21/2020 23:45:29 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:45:29 PM - INFO - connect to database 
+03/21/2020 23:45:29 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:45:29 PM - INFO - read from table 
+03/21/2020 23:45:30 PM - INFO - read from table count: 
+03/21/2020 23:45:30 PM - INFO - 6536
+03/21/2020 23:45:30 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 96, in <module>
+    over_duration_period.append(int(line[2]) // 30 + 1)  # 最大影响期数
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+
+03/21/2020 23:45:30 PM - INFO - closeing database 
+03/21/2020 23:45:30 PM - INFO - closeing database: done 
+03/21/2020 23:46:19 PM - INFO - starting...
+03/21/2020 23:46:19 PM - INFO - Out Path: D:\STUDENT_2020-03-21.xlsx
+03/21/2020 23:46:19 PM - INFO - connect to database 
+03/21/2020 23:46:19 PM - INFO - Query: SELECT ProjectID, Peroid, over_day_count from tmp_overdue;
+03/21/2020 23:46:19 PM - INFO - read from table 
+03/21/2020 23:46:19 PM - INFO - read from table count: 
+03/21/2020 23:46:19 PM - INFO - 6536
+03/21/2020 23:46:19 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "MONTH_24_STAT.py", line 96, in <module>
+    over_duration_period.append(int(line[2]) // 30 + 1)  # 最大影响期数
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+
+03/21/2020 23:46:19 PM - INFO - closeing database 
+03/21/2020 23:46:19 PM - INFO - closeing database: done 
