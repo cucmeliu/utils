@@ -46,6 +46,7 @@ logging.info("connect to database ")
 logging.info("Query: " + sql)
 conn = MySQLdb.connect(host, user, pwd, db, charset='utf8')  
 cursor = conn.cursor()  
+update_cursor = conn.cursor()
 try:
     logging.info("read from table ")
     count = cursor.execute(sql)
@@ -61,10 +62,15 @@ try:
 
     i = 2  # 注意：'cell'函数中行列起始值为1
     cur_project_id = ''
-    cur_period = 0
-    over_day_counts = []
+    period = []
+    # over_day_counts = []
     over_duration_period = []
     m24_status = []
+    # LOAN_STAT 取值
+    # 1-正常：目前所有应还租金都已经还清
+    # 2-逾期：目前还有应还未还的租金未结清
+    # 3-结清：整个合同结清时上报的的最后一条数据
+    LOAN_STAT = []
     orig_str = '///////////////////////*'
 
     for line in results:  
@@ -76,7 +82,14 @@ try:
                 i = 0
                 while i < len(over_duration_period):
                     p = over_duration_period[i]
-                    if p == 0:
+
+                    if (LOAN_STAT[i]==3):
+                        c_str = c_str + 'C'
+                        i = i + 1
+                    elif ((LOAN_STAT[i]==4) or (LOAN_STAT[i]==5 )):
+                        c_str = c_str + 'G'
+                        i = i + 1
+                    elif p == 0:
                         c_str = c_str + 'N'
                         i = i + 1
                     else:
@@ -93,23 +106,33 @@ try:
                     print(c_s)
                     logging.info(c_s)
 
+                    # 写入数据库
+                    update_str = 'UPDATE tmp_overdue SET REPAY_MONTH_24_STAT="' +  c_s + '" WHERE ProjectID = "' + cur_project_id + '" AND Peroid = ' + str(periods[m])
+
+                    print(update_str)
+                    update_cursor.execute(update_str)
+
                     # print('project:' + cur_project_id + ' - ' + str(m))
-                # 写入数据库
-                # update set  = str where project=project and period = period
+                
 
             # 初始化下一个新的项目
             cur_project_id = line[0]
-            cur_period = line[1]
+            periods = []
             over_duration_period = []
             m24_status = []
+            LOAN_STAT = []
             # last_str = '///////////////////////*'
+        periods.append(line[1])
         # dur_period：逾期的状态，1-表示逾期1-30天；2-表示逾期31-60天；3-表示逾期61-90天；4-表示逾期91-120天；5-表示逾期121-150天；6-表示逾期151-180天；7-表示逾期180天以上；
-        dur_period = (int(line[2]) - 1) // 30 + 1
+        dur_period = (int(line[2]) - 1) // 30 + 1        
+        over_duration_period.append(dur_period)  # 最大影响期数
+        LOAN_STAT.append(line[3])
+
         print('project:' + str(line[0]) + ' - period:' + str(line[1]) + '- dur_period:' + str(dur_period))
         logging.info('project:' + str(line[0]) + ' - period:' + str(line[1]) + '- dur_period:' + str(dur_period))
-        over_duration_period.append(dur_period)  # 最大影响期数
 
-        
+    conn.commit()   
+
     logging.info("write to excel file: done ")
 
 except Exception as e:
@@ -117,5 +140,7 @@ except Exception as e:
     logging.warning("exec failed, failed msg:" + traceback.format_exc())
 
 logging.info("closeing database ")
+update_cursor.close
+cursor.close
 conn.close
 logging.info("closeing database: done ")
