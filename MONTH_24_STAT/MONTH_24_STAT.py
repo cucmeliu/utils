@@ -65,37 +65,50 @@ try:
     over_day_counts = []
     over_duration_period = []
     m24_status = []
-    last_str = '///////////////////////*'
+    orig_str = '///////////////////////*'
 
     for line in results:  
         if cur_project_id !=  line[0]:
             # 处理掉上一个项目
-            if len(m24_status)>0:
-                for i in range(len(over_duration_period)-1, 0, -1):
-                    d = over_duration_period[i]
-                    if d == 0:  # 当前不逾期
-                        m24_status[i] = m24_status[i] + 'N'
+            print('--- deal with project: ' + cur_project_id)
+            if len(over_duration_period)>0:
+                c_str = ''
+                i = 0
+                while i < len(over_duration_period):
+                    p = over_duration_period[i]
+                    if p == 0:
+                        c_str = c_str + 'N'
+                        i = i + 1
                     else:
-                        for c in range(d, 0, -1):
-                            m24_status[c] = m24_status[c] + str(c + 1)
-                            #print('project:' + cur_project_id + '-period:' + str(i) + '-status:' + m24_status[c])
+                        for c in range(p):
+                            c_str = c_str + str(c+1)
+                            # c_str = c_str + ('N' if(p - c - 1==0) else str(p - c - 1))
+                            i = i + p
+                # print('c_str:' + c_str)
+                # logging.info('c_str:' + c_str)
 
-                for m in m24_status:
-                    print('project:' + cur_project_id + ' - ' +m)
+                for m in range(len(over_duration_period)):
+                    c_s = orig_str[m+1:len(orig_str)] + c_str[:m+1]
+                    m24_status.append(c_s)
+                    print(c_s)
+                    logging.info(c_s)
+
+                    # print('project:' + cur_project_id + ' - ' + str(m))
                 # 写入数据库
                 # update set  = str where project=project and period = period
 
             # 初始化下一个新的项目
             cur_project_id = line[0]
             cur_period = line[1]
-            over_day_counts = []
+            over_duration_period = []
             m24_status = []
-            last_str = '///////////////////////*'
+            # last_str = '///////////////////////*'
+        # dur_period：逾期的状态，1-表示逾期1-30天；2-表示逾期31-60天；3-表示逾期61-90天；4-表示逾期91-120天；5-表示逾期121-150天；6-表示逾期151-180天；7-表示逾期180天以上；
+        dur_period = (int(line[2]) - 1) // 30 + 1
+        print('project:' + str(line[0]) + ' - period:' + str(line[1]) + '- dur_period:' + str(dur_period))
+        logging.info('project:' + str(line[0]) + ' - period:' + str(line[1]) + '- dur_period:' + str(dur_period))
+        over_duration_period.append(dur_period)  # 最大影响期数
 
-        over_day_counts.append(line[2])
-        over_duration_period.append(int(line[2]) // 30 + 1)  # 最大影响期数
-        last_str = last_str[1:len(last_str)]
-        m24_status.append(last_str)
         
     logging.info("write to excel file: done ")
 
