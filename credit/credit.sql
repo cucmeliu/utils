@@ -1,118 +1,76 @@
 
 -- =====================================
-只导出应还款日之后一天，处于逾期状态的
-
-# 通用的
-set @export_date=DATE_FORMAT('2020-03-19', '%Y-%m-%d');
-SELECT @export_date;
-
-
-
-## -- 所有当前逾期的项目
-DROP table overdue_projects;
-CREATE TEMPORARY TABLE overdue_projects 
-( SELECT DISTINCT PROJECT_ID FROM tmp_repay_plan_till_now )
-
-## -- 当前逾期项目
-AND PROJECT_ID in ( SELECT DISTINCT PROJECT_ID FROM overdue_projects )
+说明：只导出应还款日之后一天，处于逾期状态的
 
 ## -- 累积代码
-SELECT
-	a.APPLY_NO,
-	a.TERM_NO,
-	sum(b.paid_prin) AS p_paid_prin
-FROM
-	tmp_paid_prin a
-JOIN tmp_paid_prin b
-WHERE
-	a.APPLY_NO = b.APPLY_NO
-	AND b.TERM_NO <= a.TERM_NO
-GROUP BY
-	a.APPLY_NO,
-	a.TERM_NO 
+-- SELECT
+-- 	a.APPLY_NO,
+-- 	a.TERM_NO,
+-- 	sum(b.paid_prin) AS p_paid_prin
+-- FROM
+-- 	tmp_paid_prin a
+-- JOIN tmp_paid_prin b
+-- WHERE
+-- 	a.APPLY_NO = b.APPLY_NO
+-- 	AND b.TERM_NO <= a.TERM_NO
+-- GROUP BY
+-- 	a.APPLY_NO,
+-- 	a.TERM_NO 
 
 
-## -- 项目本金表
-DROP TABLE project_period_prin;
-CREATE TEMPORARY TABLE project_period_prin 
-(
-SELECT
-	srrp.PROJECT_ID ,
-	srrp.PERIOD ,
-	srrp.RECEIPT_PLAN_DATE,
-	srrpd.RECEIPT_AMOUNT_IT
-FROM
-	SETT_RENT_RECEIPT_PLAN srrp ,
-	SETT_RENT_RECEIPT_PLAN_DETAIL srrpd
-WHERE
-	srrp.RECEIPT_PLAN_ID = srrpd.RENT_RECEIPT_PLAN_ID
-	and srrpd.SUBJECT = 'PRI'
-	and srrpd.PROJECT_ID in (
-	SELECT
-		DISTINCT PROJECT_ID
-	FROM
-		overdue_projects )
-order by
-	srrp.PROJECT_ID,
-	srrp.PERIOD )
-	
-SELECT * FROM
-project_period_prin
-WHERE PROJECT_ID = '201901260489950721A'
-	
-### 每期实际还本金
-DROP TABLE tmp_paid_prin;
-CREATE TABLE tmp_paid_prin (
-SELECT
-	APPLY_NO ,
-	TERM_NO ,
-	SUM(PAID_PRIN_AMT) as paid_prin
-FROM
-	REPAY_INSTMNT_DETAIL
-WHERE
-	APPLY_NO in (
-	SELECT
-		DISTINCT PROJECT_ID
-	FROM
-		overdue_projects )
-Group by
-	APPLY_NO ,
-	TERM_NO )
-	
-### 每期还款时间内还款本金
-(
-SELECT
-    PROJECT_ID ,
-    PERIOD ,
-    sum(PAID_PRIN_AMT) as paid_prin_during
-FROM
-    (
-    SELECT
-        srp.PROJECT_ID,
-        srp.PERIOD,
-        srp.PLAN_START_DATE,
-        srp.PLAN_END_DATE,
-        rid.REPAY_DATE,
-        rid.PAID_PRIN_AMT
-    FROM
-        SETT_REPAYMENT_PLAN srp ,
-        REPAY_INSTMNT_DETAIL rid
-    WHERE
-        srp.PROJECT_ID = rid.APPLY_NO
-        and srp.PERIOD = rid.TERM_NO
-        and rid.REPAY_DATE between srp.PLAN_START_DATE and srp.PLAN_END_DATE 
-        ) paid_during
-GROUP BY
-    PROJECT_ID,
-    PERIOD
-) paid_prin_amount_druing
+# 通用的
+## -- 1. 设置导出时间
+set @export_date=DATE_FORMAT('2020-03-19', '%Y-%m-%d');
 
-
-# -- 基础信息
--- 1. 找出逾期的人
---  	逾期报表 as overdue_rpt
+## -- 2. 逾期报表 as overdue_rpt
 -- DROP TABLE tmp_overdue_rpt;
--- CREATE  TABLE tmp_overdue_rpt;
+-- CREATE TABLE `tmp_overdue` (
+--   `id` int(11) NOT NULL AUTO_INCREMENT,
+--   `ProjectID` varchar(64) DEFAULT NULL,
+--   `Peroid` int(11) DEFAULT NULL,
+--   `over_day_count` int(11) DEFAULT NULL,
+--   `FINORGCODE` varchar(14) DEFAULT NULL,
+--   `LOANTYPE` varchar(1) DEFAULT NULL,
+--   `LOANBIZTYPE` varchar(2) DEFAULT NULL,
+--   `BUSINESS_NO` varchar(40) DEFAULT NULL,
+--   `AREACODE` int(6) DEFAULT NULL,
+--   `STARTDATE` varchar(10) DEFAULT NULL,
+--   `ENDDATE` varchar(10) DEFAULT NULL,
+--   `CURRENCY` varchar(3) DEFAULT NULL,
+--   `CREDIT_TOTAL_AMT` int(10) DEFAULT NULL,
+--   `SHARE_CREDIT_TOTAL_AMT` int(10) DEFAULT NULL,
+--   `MAX_DEBT_AMT` int(10) DEFAULT NULL,
+--   `GUARANTEEFORM` int(1) DEFAULT NULL,
+--   `PAYMENT_RATE` varchar(2) DEFAULT NULL,
+--   `PAYMENT_MONTHS` varchar(3) DEFAULT NULL,
+--   `NO_PAYMENT_MONTHS` varchar(3) DEFAULT NULL,
+--   `PLAN_REPAY_DT` varchar(10) DEFAULT NULL,
+--   `LAST_REPAY_DT` varchar(10) DEFAULT NULL,
+--   `PLAN_REPAY_AMT` int(10) DEFAULT NULL,
+--   `LAST_REPAY_AMT` int(10) DEFAULT NULL,
+--   `BALANCE` int(10) DEFAULT NULL,
+--   `CUR_OVERDUE_TOTAL_INT` int(2) DEFAULT NULL,
+--   `CUR_OVERDUE_TOTAL_AMT` int(10) DEFAULT NULL,
+--   `OVERDUE31_60DAYS_AMT` int(10) DEFAULT NULL,
+--   `OVERDUE61_90DAYS_AMT` int(10) DEFAULT NULL,
+--   `OVERDUE91_180DAYS_AMT` int(10) DEFAULT NULL,
+--   `OVERDUE_180DAYS_AMT` int(10) DEFAULT NULL,
+--   `SUM_OVERDUE_INT` int(3) DEFAULT NULL,
+--   `MAX_OVERDUE_INT` int(2) DEFAULT NULL,
+--   `CLASSIFY5` int(1) DEFAULT NULL,
+--   `LOAN_STAT` int(1) DEFAULT NULL,
+--   `REPAY_MONTH_24_STAT` varchar(24) DEFAULT NULL,
+--   `OVERDRAFT_180DAYS_BAL` int(10) DEFAULT NULL,
+--   `LOAN_ACCOUNT_STAT` varchar(1) DEFAULT NULL,
+--   `CUSTNAME` varchar(30) DEFAULT NULL,
+--   `CERTTYPE` varchar(1) DEFAULT NULL,
+--   `CERTNO` varchar(18) DEFAULT NULL,
+--   `CUSTID` varchar(50) DEFAULT NULL,
+--   `BAKE` varchar(30) DEFAULT NULL,
+--   PRIMARY KEY (`id`),
+--   KEY `tmp_overdue_ProjectID_IDX` (`ProjectID`,`Peroid`) USING BTREE
+-- ) ENGINE=InnoDB AUTO_INCREMENT=9215 DEFAULT CHARSET=utf8mb4;
+
 TRUNCATE(tmp_overdue_rpt) ;
 
 INSERT INTO tmp_overdue_rpt
@@ -186,7 +144,70 @@ WHERE
 	ORDER BY overdue_days DESC ;
 -- 
 
--- 2. 逾期的人从第一期到今的还款计划，即所有需要计算的 project + period
+## -- 所有当前逾期的项目
+DROP table IF EXISTS overdue_projects;
+CREATE TEMPORARY TABLE overdue_projects 
+( SELECT DISTINCT PROJECT_ID FROM tmp_repay_plan_till_now )
+
+## -- 当前逾期项目的查询字段
+AND PROJECT_ID in ( SELECT DISTINCT PROJECT_ID FROM overdue_projects )
+
+
+## -- 项目本金表
+DROP TABLE IF EXISTS project_period_prin;
+CREATE TEMPORARY TABLE project_period_prin 
+(
+SELECT
+	srrp.PROJECT_ID ,
+	srrp.PERIOD ,
+	srrp.RECEIPT_PLAN_DATE,
+	srrpd.RECEIPT_AMOUNT_IT
+FROM
+	SETT_RENT_RECEIPT_PLAN srrp ,
+	SETT_RENT_RECEIPT_PLAN_DETAIL srrpd
+WHERE
+	srrp.RECEIPT_PLAN_ID = srrpd.RENT_RECEIPT_PLAN_ID
+	and srrpd.SUBJECT = 'PRI'
+	and srrpd.PROJECT_ID in (
+	SELECT
+		DISTINCT PROJECT_ID
+	FROM
+		overdue_projects )
+order by
+	srrp.PROJECT_ID,
+	srrp.PERIOD )
+	
+### 每期还款时间内还款本金
+-- (
+-- SELECT
+--     PROJECT_ID ,
+--     PERIOD ,
+--     sum(PAID_PRIN_AMT) as paid_prin_during
+-- FROM
+--     (
+--     SELECT
+--         srp.PROJECT_ID,
+--         srp.PERIOD,
+--         srp.PLAN_START_DATE,
+--         srp.PLAN_END_DATE,
+--         rid.REPAY_DATE,
+--         rid.PAID_PRIN_AMT
+--     FROM
+--         SETT_REPAYMENT_PLAN srp ,
+--         REPAY_INSTMNT_DETAIL rid
+--     WHERE
+--         srp.PROJECT_ID = rid.APPLY_NO
+--         and srp.PERIOD = rid.TERM_NO
+--         and rid.REPAY_DATE between srp.PLAN_START_DATE and srp.PLAN_END_DATE 
+--         ) paid_during
+-- GROUP BY
+--     PROJECT_ID,
+--     PERIOD
+-- ) paid_prin_amount_druing
+
+
+# -- 基础信息
+-- 逾期的人从第一期到今的还款计划，即所有需要计算的 project + period
 DROP table tmp_repay_plan_till_now;
 CREATE TABLE tmp_repay_plan_till_now(
 SELECT
@@ -292,100 +313,7 @@ ORDER BY
 	ao.PERIOD
 	)
 		
-## -- -- 第一条记录是新开户相关信息
--- 为减少影响，这条放在所有数据处理完后，最后再执行
- INSERT
-	INTO
-	small_core_like_prod.tmp_overdue (ProjectID,
-	Peroid,
-	FINORGCODE,
-	LOANTYPE,
-	LOANBIZTYPE,
-	BUSINESS_NO,
-	AREACODE,
-	STARTDATE,
-	ENDDATE,
-	CURRENCY,
-	CREDIT_TOTAL_AMT,
-	SHARE_CREDIT_TOTAL_AMT,
-	MAX_DEBT_AMT,
-	GUARANTEEFORM,
-	PAYMENT_RATE,
-	PAYMENT_MONTHS,
-	NO_PAYMENT_MONTHS,
-	PLAN_REPAY_DT,
-	LAST_REPAY_DT,
-	PLAN_REPAY_AMT,
-	LAST_REPAY_AMT,
-	BALANCE,
-	CUR_OVERDUE_TOTAL_INT,
-	CUR_OVERDUE_TOTAL_AMT,
-	OVERDUE31_60DAYS_AMT,
-	OVERDUE61_90DAYS_AMT,
-	OVERDUE91_180DAYS_AMT,
-	OVERDUE_180DAYS_AMT,
-	SUM_OVERDUE_INT,
-	MAX_OVERDUE_INT,
-	CLASSIFY5,
-	LOAN_STAT,
-	REPAY_MONTH_24_STAT,
-	OVERDRAFT_180DAYS_BAL,
-	LOAN_ACCOUNT_STAT,
-	CUSTNAME,
-	CERTTYPE,
-	CERTNO,
-	CUSTID,
-	BAKE) (
-	SELECT
-		ao.APPLY_NO as ProjectID,
-		'0' as Peroid,
-		'M10154210H0001' AS FINORGCODE,
-		'4' AS LOANTYPE,
-		'92' AS LOANBIZTYPE,
-		ao.LEASE_CONTRACT_NO AS BUSINESS_NO,
-		'360102' AS AREACODE,
-		-- {todo}
-        ao.START_DATE AS STARTDATE,
-		ao.END_DATE AS ENDDATE,
-		'CNY' AS CURRENCY,
-		ao.ACTUAL_AMOUNT AS CREDIT_TOTAL_AMT,
-		ao.ACTUAL_AMOUNT AS SHARE_CREDIT_TOTAL_AMT,
-		ao.ACTUAL_AMOUNT AS MAX_DEBT_AMT,
-		ao.LEASE_TYPE AS GUARANTEEFORM,
-		'03' AS PAYMENT_RATE,
-		ao.PERIOD AS PAYMENT_MONTHS,
-		ao.PERIOD AS NO_PAYMENT_MONTHS,
-		ao.START_DATE as PLAN_REPAY_DT,
-		ao.START_DATE as LAST_REPAY_DT,
-		'0' as PLAN_REPAY_AMT,
-		'0' as LAST_REPAY_AMT,
-		ao.ACTUAL_AMOUNT as BALANCE,
-		'0' as CUR_OVERDUE_TOTAL_INT,
-		'0' as CUR_OVERDUE_TOTAL_AMT,
-		'0' as OVERDUE31_60DAYS_AMT,
-		'0' as OVERDUE61_90DAYS_AMT,
-		'0' as OVERDUE91_180DAYS_AMT,
-		'0' as OVERDUE_180DAYS_AMT,
-		'0' as SUM_OVERDUE_INT,
-		'0' as MAX_OVERDUE_INT,
-		'1' as CLASSIFY5,
-		'1' as LOAN_STAT,
-		'///////////////////////*' as REPAY_MONTH_24_STAT,
-		'0' as OVERDRAFT_180DAYS_BAL,
-		'2' as LOAN_ACCOUNT_STAT,
-		ao.USER_ACCOUNT_NAME AS CUSTNAME,
-		'0' AS CERTTYPE,
-		ao.ID_CARD_NO AS CERTNO,
-		ao.ID_CARD_NO AS CUSTID,
-		'' AS BAKE
-	FROM
-		APPLY_ORDER ao
-	WHERE
-		ao.APPLY_NO in ( SELECT DISTINCT PROJECT_ID FROM overdue_projects ) )
-select
-	count(1)
-from
-	tmp_overdue ;
+
     
 
 # -- 不需汇总字段
@@ -550,6 +478,24 @@ GROUP BY
 
 
 
+### 每期实际还本金
+DROP TABLE tmp_paid_prin;
+CREATE TABLE tmp_paid_prin (
+SELECT
+	APPLY_NO ,
+	TERM_NO ,
+	SUM(PAID_PRIN_AMT) as paid_prin
+FROM
+	REPAY_INSTMNT_DETAIL
+WHERE
+	APPLY_NO in (
+	SELECT
+		DISTINCT PROJECT_ID
+	FROM
+		overdue_projects )
+Group by
+	APPLY_NO ,
+	TERM_NO )
 
 ### 截止每一期时，实际总共已还款本金
 DROP TABLE tmp_paid;
@@ -1450,8 +1396,102 @@ SET
 
 
 ## 在这里插入每个人的第一条
-
-## 最后手动更新没有最近一次还款日期的为前期日期。
+## -- -- 第一条记录是新开户相关信息
+-- 为减少影响，这条放在所有数据处理完后，最后再执行
+ INSERT
+	INTO
+	small_core_like_prod.tmp_overdue (ProjectID,
+	Peroid,
+	FINORGCODE,
+	LOANTYPE,
+	LOANBIZTYPE,
+	BUSINESS_NO,
+	AREACODE,
+	STARTDATE,
+	ENDDATE,
+	CURRENCY,
+	CREDIT_TOTAL_AMT,
+	SHARE_CREDIT_TOTAL_AMT,
+	MAX_DEBT_AMT,
+	GUARANTEEFORM,
+	PAYMENT_RATE,
+	PAYMENT_MONTHS,
+	NO_PAYMENT_MONTHS,
+	PLAN_REPAY_DT,
+	LAST_REPAY_DT,
+	PLAN_REPAY_AMT,
+	LAST_REPAY_AMT,
+	BALANCE,
+	CUR_OVERDUE_TOTAL_INT,
+	CUR_OVERDUE_TOTAL_AMT,
+	OVERDUE31_60DAYS_AMT,
+	OVERDUE61_90DAYS_AMT,
+	OVERDUE91_180DAYS_AMT,
+	OVERDUE_180DAYS_AMT,
+	SUM_OVERDUE_INT,
+	MAX_OVERDUE_INT,
+	CLASSIFY5,
+	LOAN_STAT,
+	REPAY_MONTH_24_STAT,
+	OVERDRAFT_180DAYS_BAL,
+	LOAN_ACCOUNT_STAT,
+	CUSTNAME,
+	CERTTYPE,
+	CERTNO,
+	CUSTID,
+	BAKE) (
+	SELECT
+		ao.APPLY_NO as ProjectID,
+		'0' as Peroid,
+		'M10154210H0001' AS FINORGCODE,
+		'4' AS LOANTYPE,
+		'92' AS LOANBIZTYPE,
+		ao.LEASE_CONTRACT_NO AS BUSINESS_NO,
+		'360102' AS AREACODE,
+		-- {todo}
+        ao.START_DATE AS STARTDATE,
+		ao.END_DATE AS ENDDATE,
+		'CNY' AS CURRENCY,
+		ao.ACTUAL_AMOUNT AS CREDIT_TOTAL_AMT,
+		ao.ACTUAL_AMOUNT AS SHARE_CREDIT_TOTAL_AMT,
+		ao.ACTUAL_AMOUNT AS MAX_DEBT_AMT,
+		ao.LEASE_TYPE AS GUARANTEEFORM,
+		'03' AS PAYMENT_RATE,
+		ao.PERIOD AS PAYMENT_MONTHS,
+		ao.PERIOD AS NO_PAYMENT_MONTHS,
+		ao.START_DATE as PLAN_REPAY_DT,
+		ao.START_DATE as LAST_REPAY_DT,
+		'0' as PLAN_REPAY_AMT,
+		'0' as LAST_REPAY_AMT,
+		ao.ACTUAL_AMOUNT as BALANCE,
+		'0' as CUR_OVERDUE_TOTAL_INT,
+		'0' as CUR_OVERDUE_TOTAL_AMT,
+		'0' as OVERDUE31_60DAYS_AMT,
+		'0' as OVERDUE61_90DAYS_AMT,
+		'0' as OVERDUE91_180DAYS_AMT,
+		'0' as OVERDUE_180DAYS_AMT,
+		'0' as SUM_OVERDUE_INT,
+		'0' as MAX_OVERDUE_INT,
+		'1' as CLASSIFY5,
+		'1' as LOAN_STAT,
+		'///////////////////////*' as REPAY_MONTH_24_STAT,
+		'0' as OVERDRAFT_180DAYS_BAL,
+		'2' as LOAN_ACCOUNT_STAT,
+		ao.USER_ACCOUNT_NAME AS CUSTNAME,
+		'0' AS CERTTYPE,
+		ao.ID_CARD_NO AS CERTNO,
+		ao.ID_CARD_NO AS CUSTID,
+		'' AS BAKE
+	FROM
+		APPLY_ORDER ao
+	WHERE
+		ao.APPLY_NO in ( SELECT DISTINCT PROJECT_ID FROM overdue_projects ) )
+select
+	count(1)
+from
+	tmp_overdue ;
+   
+# 转成中文
 SELECT 
 FINORGCODE		as		金融机构代码（业务发生机构代码）	,
 LOANTYPE		as		业务种类	,
