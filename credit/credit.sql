@@ -1,6 +1,6 @@
 
 -- =====================================
-说明：只导出应还款日之后一天，处于逾期状态的
+# 说明：只导出应还款日之后一天，处于逾期状态的
 
 ## -- 累积代码
 -- SELECT
@@ -169,11 +169,7 @@ FROM
 WHERE
     srrp.RECEIPT_PLAN_ID = srrpd.RENT_RECEIPT_PLAN_ID
     and srrpd.SUBJECT = 'PRI'
-    and srrpd.PROJECT_ID in (
-    SELECT
-        DISTINCT PROJECT_ID
-    FROM
-        tmp_overdue_projects )
+    and srrpd.PROJECT_ID in ( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects )
 order by
     srrp.PROJECT_ID,
     srrp.PERIOD );
@@ -222,11 +218,7 @@ SELECT
 FROM
     SETT_REPAYMENT_PLAN
 WHERE
-    PROJECT_ID in (
-    SELECT
-        DISTINCT PROJECT_ID
-    FROM
-        tmp_overdue_projects )
+    PROJECT_ID in ( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects )
     and REPAYMENT_DATE < NOW()
 ORDER BY
     PROJECT_ID,
@@ -311,13 +303,13 @@ FROM
     tmp_repay_plan_till_now trptn
 WHERE
     ao.APPLY_NO = trptn.PROJECT_ID
+    and trptn.PERIOD <= ao.PERIOD 
 ORDER BY
     ao.APPLY_NO,
     ao.PERIOD
     );
         
 
-    
 
 # -- 不需汇总字段
 ## -- 本月应还款金额（以还款计划表为准）
@@ -465,60 +457,85 @@ SET
 
 
 ### 每期实际还本金
+-- DROP TABLE if exists tmp_paid_prin;
+-- CREATE TABLE tmp_paid_prin (
+-- SELECT
+--     APPLY_NO ,
+--     TERM_NO ,
+--     SUM(PAID_PRIN_AMT) as paid_prin
+-- FROM
+--     REPAY_INSTMNT_DETAIL
+-- WHERE
+--     APPLY_NO in (
+--     SELECT
+--         DISTINCT PROJECT_ID
+--     FROM
+--         tmp_overdue_projects )
+-- Group by
+--     APPLY_NO ,
+--     TERM_NO );
+
+-- 改为截止当期还款时间，即在每一期还款时间内的还款本金
 DROP TABLE if exists tmp_paid_prin;
 CREATE TABLE tmp_paid_prin (
 SELECT
-    APPLY_NO ,
-    TERM_NO ,
-    SUM(PAID_PRIN_AMT) as paid_prin
+    srp.PROJECT_ID ,
+    srp.PERIOD ,
+    SUM(rid.PAID_PRIN_AMT) as paid_prin
 FROM
-    REPAY_INSTMNT_DETAIL
+	SETT_REPAYMENT_PLAN srp
+left join
+    REPAY_INSTMNT_DETAIL rid
+on
+	srp.PROJECT_ID = rid.APPLY_NO 
 WHERE
-    APPLY_NO in (
-    SELECT
-        DISTINCT PROJECT_ID
-    FROM
-        tmp_overdue_projects )
-Group by
-    APPLY_NO ,
-    TERM_NO );
+   -- APPLY_NO in ( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects )
+-- and 
+PROJECT_ID in ( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects )
+and (rid.REPAY_DATE <= srp.PLAN_END_DATE OR rid.REPAY_DATE is NULL )
+Group by PROJECT_ID , PERIOD 
+-- ORDER by  PROJECT_ID , PERIOD 
+    );
+   
+-- SELECT * from tmp_paid_prin tpp where PROJECT_ID = '201912160774052500A'
 
 ### 截止每一期时，实际总共已还款本金
-DROP TABLE if exists tmp_paid;
-CREATE TEMPORARY TABLE tmp_paid (
-SELECT
-    a.APPLY_NO,
-    a.TERM_NO,
-    sum(b.paid_prin) as p_paid_prin
-FROM
-    tmp_paid_prin a
-JOIN tmp_paid_prin b
-WHERE
-    a.APPLY_NO = b.APPLY_NO
-    and b.TERM_NO <= a.TERM_NO
-group by
-    a.APPLY_NO,
-    a.TERM_NO );
+-- DROP TABLE if exists tmp_paid;
+-- CREATE TEMPORARY TABLE tmp_paid (
+-- SELECT
+--     a.APPLY_NO,
+--     a.TERM_NO,
+--     sum(b.paid_prin) as p_paid_prin
+-- FROM
+--     tmp_paid_prin a
+-- JOIN tmp_paid_prin b
+-- WHERE
+--     a.APPLY_NO = b.APPLY_NO
+--     and b.TERM_NO <= a.TERM_NO
+-- group by
+--     a.APPLY_NO,
+--     a.TERM_NO );
 
-
+   
 ### -- 余额 = 总本金 - 已还本金
 UPDATE
     tmp_overdue
 inner JOIN (
     SELECT
         ao.APPLY_NO,
-        tmp_paid.TERM_NO,
-        (ao.ACTUAL_AMOUNT - IFNULL(tmp_paid.p_paid_prin, 0)) as BALANCE
+        tmp_paid_prin.PERIOD,
+        (ao.ACTUAL_AMOUNT - IFNULL(tmp_paid_prin.paid_prin, 0)) as BALANCE
     FROM
         APPLY_ORDER ao,
-        tmp_paid
-    WHERE
-        ao.APPLY_NO = tmp_paid.APPLY_NO
+        tmp_paid_prin
+    WHERE 
+        ao.APPLY_NO = tmp_paid_prin.PROJECT_ID
     GROUP BY
         ao.APPLY_NO,
-        tmp_paid.TERM_NO ) as up_tab ON
+        tmp_paid_prin.PERIOD ) as up_tab 
+        ON
     tmp_overdue.ProjectID = up_tab.APPLY_NO
-    AND tmp_overdue.Peroid = up_tab.TERM_NO 
+    AND tmp_overdue.Peroid = up_tab.PERIOD 
 SET
     tmp_overdue.BALANCE = up_tab.BALANCE;
    
@@ -527,10 +544,10 @@ SET
 -- UPDATE
 --     tmp_overdue
 -- inner JOIN ( 
--- 	SELECT ProjectID , Peroid ,IF(over_day_count=0, 0, 1) as is_cur_overdue
--- 	FROM tmp_overdue
--- 	group by ProjectID , Peroid 
--- 	
+--  SELECT ProjectID , Peroid ,IF(over_day_count=0, 0, 1) as is_cur_overdue
+--  FROM tmp_overdue
+--  group by ProjectID , Peroid 
+--  
 -- ) as up_tab ON
 --     tmp_overdue.ProjectID = up_tab.ProjectID
 --     AND tmp_overdue.Peroid = up_tab.Peroid 
@@ -690,12 +707,12 @@ DROP table if exists tmp_period_EXPECTED_AMT;
 --     and REPAYMENT_DATE < NOW() 
 CREATE  table tmp_period_EXPECTED_AMT(
 SELECT 
-	PROJECT_ID, PERIOD, RECEIPT_PLAN_DATE, RECEIPT_AMOUNT_IT
+    PROJECT_ID, PERIOD, RECEIPT_PLAN_DATE, RECEIPT_AMOUNT_IT
 FROM 
     SETT_RENT_RECEIPT_PLAN
 WHERE 
-	PROJECT_ID in ( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects ) 
-	and RECEIPT_PLAN_DATE < NOW() 
+    PROJECT_ID in ( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects ) 
+    and RECEIPT_PLAN_DATE < NOW() 
     );
     
 -- 截止每期时间的总租金
@@ -1429,24 +1446,28 @@ WHERE
 UPDATE
     tmp_overdue
 inner JOIN (
-SELECT PROJECT_ID, max(PERIOD)  as max_period 
+SELECT APPLY_NO, PERIOD as max_period 
 FROM
-        SETT_REPAYMENT_PLAN
-    WHERE
-        PROJECT_ID in ( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects )
-group by PROJECT_ID) as up_tab 
+APPLY_ORDER
+WHERE APPLY_NO in ( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects )
+
+-- SELECT PROJECT_ID, max(PERIOD)  as max_period 
+-- FROM
+--         SETT_REPAYMENT_PLAN
+--     WHERE
+--         PROJECT_ID in ( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects )
+-- group by PROJECT_ID
+) as up_tab 
 ON
-    tmp_overdue.ProjectID = up_tab.PROJECT_ID
+    tmp_overdue.ProjectID = up_tab.APPLY_NO
     AND tmp_overdue.Peroid = up_tab.max_period 
-AND tmp_overdue.LOAN_STAT = 1
+AND (tmp_overdue.LOAN_STAT = 1 or tmp_overdue.BALANCE = 0)
 SET
     tmp_overdue.LOAN_STAT = 3;
   
    
 
 
-# 执行Python 代码 
-python MONTH_24_STAT.py
 
 
 ## 在这里插入每个人的第一条
@@ -1552,6 +1573,37 @@ INSERT
 -- UPDATE tmp_overdue set LAST_REPAY_DT = NULL;
 
 
+## -- 最近一次实际还款日期；本期无，则用历史最新(对第一期都没还款的）
+UPDATE
+    tmp_overdue
+inner JOIN (
+SELECT
+    a.ProjectID,
+    a.Peroid,
+    MAX(b.LAST_REPAY_DT) as max_dt_till_now
+FROM
+    tmp_overdue a
+JOIN tmp_overdue b
+WHERE
+    a.ProjectID = b.ProjectID
+    and b.Peroid <= a.Peroid
+    and a.LAST_REPAY_DT IS NULL 
+group by
+    a.ProjectID,
+    a.Peroid
+) as up_tab ON
+    tmp_overdue.ProjectID = up_tab.ProjectID
+    AND tmp_overdue.Peroid = up_tab.Peroid 
+SET
+    tmp_overdue.LAST_REPAY_DT = up_tab.max_dt_till_now;    
+
+
+
+
+# 执行Python 代码 
+python MONTH_24_STAT.py
+
+
 
 
     
@@ -1600,7 +1652,7 @@ order by ProjectID, Peroid;
     
 
 
-
+-- DELETE FROM tmp_overdue  WHERE ProjectID <> '201908190739259304A'
 
 
 
