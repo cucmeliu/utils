@@ -130,8 +130,6 @@ try:
 
         print('project:' + str(line[0]) + ' - period:' + str(line[1]) + '- dur_period:' + str(dur_period))
         logging.info('project:' + str(line[0]) + ' - period:' + str(line[1]) + '- dur_period:' + str(dur_period))
-
-
     
     # 处理最后一个项目
     print('--- deal with project: ' + cur_project_id)

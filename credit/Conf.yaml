@@ -9,7 +9,7 @@ DB:
     HOST:  172.16.0.200
     USER: root
     PWD:  mysql
-    DB: small_core_like_prod
+    DB: small_core_leo
     SQL: SELECT ProjectID, Peroid, over_day_count, LOAN_STAT from tmp_overdue  WHERE  over_day_count is not NULL and Peroid <> 0 order by ProjectID, Peroid; 
 
 # 导出的Excel
