@@ -2,23 +2,6 @@
 -- =====================================
 # 说明：只导出应还款日之后一天，处于逾期状态的
 
-## -- 累积代码
--- SELECT * from tmp_verdue_paid_prin;
--- SELECT
---  a.PROJECT_ID,
---  a.PERIOD,
---  sum(b.paid_prin) AS p_paid_prin
--- FROM
---  tmp_paid_prin a
--- JOIN tmp_paid_prin b
--- WHERE
---  a.PROJECT_ID = b.PROJECT_ID
---  AND b.PERIOD <= a.PERIOD
--- GROUP BY
---  a.PROJECT_ID,
---  a.PERIOD 
-
-
 # 通用的
 ## -- 1. 设置导出时间
 set @export_date=DATE_FORMAT(NOW() , '%Y-%m-%d');
@@ -165,6 +148,38 @@ CREATE table tmp_repay_plan_detail
         srrpd.PROJECT_ID in (SELECT PROJECT_ID FROM tmp_overdue_projects)
         and srrp.RECEIPT_PLAN_ID = srrpd.RENT_RECEIPT_PLAN_ID 
 );
+ 
+
+-- 逾期的 instmnt
+-- select * from  tmp_repay_instmnt order by PROJECT_ID, PERIOD;
+DROP TABLE if exists tmp_repay_instmnt;
+CREATE table tmp_repay_instmnt
+(
+select
+        PROJECT_ID, PERIOD, REPAYMENT_DATE, PLAN_START_DATE, PLAN_END_DATE, 
+        EXPECTED_AMT, CURRENCY, PLAN_STATUS, OVERDUE_DAYS, OVERDUE_TOTAL_DAYS, 
+        PLAN_SETTLE_DATE
+        -- instmnt below
+        CONTRACT_NO,  REPAY_AMT_TYPE, REPAY_DATE, CURR_PRIN_BAL, CURR_INT_BAL, 
+        CURR_OVD_PRIN_PNLT_BAL, CURR_OVD_INT_PNLT_BAL, REPAY_AMT, PAID_PRIN_AMT, PAID_INT_AMT, 
+        PAID_OVD_PRIN_PNLT_AMT, PAID_OVD_INT_PNLT_AMT
+    FROM 
+        SETT_REPAYMENT_PLAN srrp,
+        REPAY_INSTMNT_DETAIL rid 
+    WHERE srrp.PROJECT_ID = rid.APPLY_NO 
+        and srrp.PERIOD = rid.TERM_NO 
+        -- and srrp.PROJECT_ID in (SELECT PROJECT_ID FROM tmp_overdue_projects)
+        and rid.APPLY_NO in (SELECT PROJECT_ID FROM tmp_overdue_projects)
+);
+
+
+
+
+
+
+
+
+
 
 
 
@@ -195,39 +210,15 @@ ORDER BY
     PROJECT_ID,
     PERIOD );
 
+-- SELECT * FROM tmp_repay_plan_till_now order by PROJECT_ID , PERIOD ;
+
+   
 -- 最后一期已经逾期的
 ##################
 -- 补充超过12期的
 CALL add_overdue;
-
-
--- SELECT * FROM tmp_repay_plan_till_now order by PROJECT_ID , PERIOD ;
-
--- 逾期的 instmnt
--- select * from  tmp_repay_instmnt order by PROJECT_ID, PERIOD;
-DROP TABLE if exists tmp_repay_instmnt;
-CREATE table tmp_repay_instmnt
-(
-select
-        PROJECT_ID, PERIOD, REPAYMENT_DATE, PLAN_START_DATE, PLAN_END_DATE, 
-        EXPECTED_AMT, CURRENCY, PLAN_STATUS, OVERDUE_DAYS, OVERDUE_TOTAL_DAYS, 
-        PLAN_SETTLE_DATE
-        -- instmnt below
-        CONTRACT_NO,  REPAY_AMT_TYPE, REPAY_DATE, CURR_PRIN_BAL, CURR_INT_BAL, 
-        CURR_OVD_PRIN_PNLT_BAL, CURR_OVD_INT_PNLT_BAL, REPAY_AMT, PAID_PRIN_AMT, PAID_INT_AMT, 
-        PAID_OVD_PRIN_PNLT_AMT, PAID_OVD_INT_PNLT_AMT
-    FROM 
-        SETT_REPAYMENT_PLAN srrp,
-        REPAY_INSTMNT_DETAIL rid 
-    WHERE srrp.PROJECT_ID = rid.APPLY_NO 
-        and srrp.PERIOD = rid.TERM_NO 
-        -- and srrp.PROJECT_ID in (SELECT PROJECT_ID FROM tmp_overdue_projects)
-        and rid.APPLY_NO in (SELECT PROJECT_ID FROM tmp_overdue_projects)
-);
-
-
-
 ######################
+
 --  不再从原始表中查询数据，只从生成的 tmp_xxx 表
 ######################
 
@@ -319,6 +310,97 @@ ORDER BY
 
 
 
+### -- 目前还处于逾期执行中的，进行汇总
+ -- 方法：每期的完成时间与当前期的时间对比，大于当前期则 +1  
+-- SELECT * from tmp_CUR_OVERDUE_TOTAL_INT;
+DROP table if exists tmp_CUR_OVERDUE_TOTAL_INT; 
+CREATE table tmp_CUR_OVERDUE_TOTAL_INT (
+SELECT 
+    PROJECT_ID , PERIOD ,REPAYMENT_DATE, IFNULL(PLAN_SETTLE_DATE, curdate() ) as SETTLE_DATE
+FROM 
+    tmp_repay_plan_till_now
+WHERE 
+    -- PROJECT_ID in ( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects )
+    -- and 
+    REPAYMENT_DATE < IFNULL(PLAN_SETTLE_DATE, curdate() )
+ order by PROJECT_ID , PERIOD
+);
+
+-- 
+UPDATE
+    tmp_overdue
+inner JOIN ( 
+    SELECT a.PROJECT_ID , a.PERIOD, COUNT(b.SETTLE_DATE)  as CUR_OVERDUE_TOTAL_INT
+    FROM tmp_CUR_OVERDUE_TOTAL_INT a
+    JOIN tmp_CUR_OVERDUE_TOTAL_INT b
+    ON 
+        a.PROJECT_ID = b.PROJECT_ID 
+    WHERE
+        b.PERIOD <= a.PERIOD
+        and b.SETTLE_DATE >= a.REPAYMENT_DATE
+    GROUP by a.PROJECT_ID , a.PERIOD
+    ORDER by a.PROJECT_ID , a.PERIOD
+) as up_tab ON
+    tmp_overdue.ProjectID = up_tab.PROJECT_ID
+    AND tmp_overdue.Peroid = up_tab.PERIOD 
+SET
+    tmp_overdue.CUR_OVERDUE_TOTAL_INT = up_tab.CUR_OVERDUE_TOTAL_INT;
+
+### --  其他全部置 0
+UPDATE tmp_overdue set CUR_OVERDUE_TOTAL_INT=0 where CUR_OVERDUE_TOTAL_INT is NULL;
+
+## 最高逾期期数 MAX_OVERDUE_INT
+-- 所有已经产生的逾期期数中，取最大值
+UPDATE tmp_overdue 
+inner JOIN (
+    SELECT
+        a.ProjectID,
+        a.Peroid,
+        MAX(b.CUR_OVERDUE_TOTAL_INT) AS MAX_OVERDUE_INT
+    FROM
+        tmp_overdue a
+    JOIN tmp_overdue b
+    WHERE
+        a.ProjectID = b.ProjectID
+        AND b.Peroid <= a.Peroid
+    GROUP BY
+        a.ProjectID,
+        a.Peroid 
+)as up_tab ON
+    tmp_overdue.ProjectID = up_tab.ProjectID
+    AND tmp_overdue.Peroid = up_tab.Peroid 
+SET
+    tmp_overdue.MAX_OVERDUE_INT = up_tab.MAX_OVERDUE_INT;
+   
+ 
+## -- == 累计逾期期数
+UPDATE
+    tmp_overdue
+inner JOIN (
+    SELECT
+        a.PROJECT_ID,
+        a.PERIOD ,
+        sum(b.OVERDUE_DAYS) as total_overdue
+    FROM
+        SETT_REPAYMENT_PLAN a
+    JOIN SETT_REPAYMENT_PLAN b
+    WHERE
+        a.PROJECT_ID = b.PROJECT_ID
+        AND a.PROJECT_ID in (
+        SELECT
+            DISTINCT PROJECT_ID
+        FROM
+            tmp_overdue_projects )
+        and b.PERIOD <= a.PERIOD
+    group by
+        a.PROJECT_ID ,
+        a.PERIOD )as up_tab ON
+    tmp_overdue.ProjectID = up_tab.PROJECT_ID
+    AND tmp_overdue.Peroid = up_tab.PERIOD 
+SET
+    tmp_overdue.SUM_OVERDUE_INT = up_tab.total_overdue;   
+   
+   
 # 处理  1、到期前提前结清，应还日错误，24个月状态错误。正确的为：应还日=实还日，与上一期在同一个月内结清，24个月状态更新上期最后一位为C，例如附件中第78行和第79行，应还日为2月8日的款项实际逾期，2月份24个月状态为：////////////*NNNNNNNNNN1，客户于2月23日全额提前结清，24个月状态应为////////////*NNNNNNNNNNC。该情况下仅用C更新掉1，累计逾期期数与最高逾期期数不做维护。   
 
 ############################
@@ -623,168 +705,7 @@ GROUP BY te.PROJECT_ID, te.PERIOD
 SET
     tmp_overdue.CUR_OVERDUE_TOTAL_AMT = up_tab.CUR_OVERDUE_TOTAL_AMT;
 
-  
-   
-#########################################
--- 处理完全超期的
--- 1. 找出最后一期已经逾期的
--- DROP table if exists tmp_last_overdue;
--- create table tmp_last_overdue
--- SELECT ProjectID, MAX(Peroid) as mp, ENDDATE FROM 
---         tmp_overdue to2 
---         WHERE 
---         ENDDATE < NOW() 
---         GROUP by ProjectID 
- 
 
-
--- select * from  tmp_repay_plan_till_now where PROJECT_ID = '201901030457792105A' order by PROJECT_ID, PERIOD;
-##################
--- 补充超过12期的
--- CALL add_overdue;
-##################
-## 找出已超过最终还款日的
-############################
-CALL  Add_Overdue_Period;
-##########################
---     存储过程中得到的   
--- PLAN_REPAY_DT,  -- 月底
--- SUM_OVERDUE_INT -- 上一期 + 1
--- MAX_OVERDUE_INT -- 上一期 + 1
--- 
--- 
---     
---     需另计算的
--- LAST_REPAY_DT,  -- 期间或之前最后
--- PLAN_REPAY_AMT  -- 上一期的 CUR_OVERDUE_TOTAL_AMT
--- LAST_REPAY_AMT  -- 上期末到这期实还
--- BALANCE         -- balance - 期间实还本金  临时表tmp_paid_prin_over
--- CUR_OVERDUE_TOTAL_INT 
--- CUR_OVERDUE_TOTAL_AMT  -- 上一期 CUR_OVERDUE_TOTAL_AMT - LAST_REPAY_AMT
--- 
--- 
--- 
--- 
---    
---     可合并在主流程的
---     
---      CLASSIFY5, LOAN_STAT, REPAY_MONTH_24_STAT, 
---      
---      
---  over_day_count, 
---             
---         
---             OVERDUE31_60DAYS_AMT, OVERDUE61_90DAYS_AMT, OVERDUE91_180DAYS_AMT, OVERDUE_180DAYS_AMT, 
---                 
---    
- 
-    
-#########################   
-## -- == 当前逾期期数
--- UPDATE
---     tmp_overdue
--- inner JOIN ( 
---  SELECT ProjectID , Peroid ,IF(over_day_count=0, 0, 1) as is_cur_overdue
---  FROM tmp_overdue
---  group by ProjectID , Peroid 
---  
--- ) as up_tab ON
---     tmp_overdue.ProjectID = up_tab.ProjectID
---     AND tmp_overdue.Peroid = up_tab.Peroid 
--- SET
---     tmp_overdue.CUR_OVERDUE_TOTAL_INT = up_tab.CUR_OVERDUE_TOTAL_INT;
-
-### -- 目前还处于逾期执行中的，进行汇总
- -- 方法：每期的完成时间与当前期的时间对比，大于当前期则 +1  
--- SELECT * from tmp_CUR_OVERDUE_TOTAL_INT;
-DROP table if exists tmp_CUR_OVERDUE_TOTAL_INT; 
-CREATE table tmp_CUR_OVERDUE_TOTAL_INT (
-SELECT 
-    PROJECT_ID , PERIOD ,REPAYMENT_DATE, IFNULL(PLAN_SETTLE_DATE, curdate() ) as SETTLE_DATE
-FROM 
-    tmp_repay_plan_till_now
-WHERE 
-    -- PROJECT_ID in ( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects )
-    -- and 
-    REPAYMENT_DATE < IFNULL(PLAN_SETTLE_DATE, curdate() )
- order by PROJECT_ID , PERIOD
-);
-
--- 
-UPDATE
-    tmp_overdue
-inner JOIN ( 
-    SELECT a.PROJECT_ID , a.PERIOD, COUNT(b.SETTLE_DATE)  as CUR_OVERDUE_TOTAL_INT
-    FROM tmp_CUR_OVERDUE_TOTAL_INT a
-    JOIN tmp_CUR_OVERDUE_TOTAL_INT b
-    ON 
-        a.PROJECT_ID = b.PROJECT_ID 
-    WHERE
-        b.PERIOD <= a.PERIOD
-        and b.SETTLE_DATE >= a.REPAYMENT_DATE
-    GROUP by a.PROJECT_ID , a.PERIOD
-    ORDER by a.PROJECT_ID , a.PERIOD
-) as up_tab ON
-    tmp_overdue.ProjectID = up_tab.PROJECT_ID
-    AND tmp_overdue.Peroid = up_tab.PERIOD 
-SET
-    tmp_overdue.CUR_OVERDUE_TOTAL_INT = up_tab.CUR_OVERDUE_TOTAL_INT;
-
-### --  其他全部置 0
-UPDATE tmp_overdue set CUR_OVERDUE_TOTAL_INT=0 where CUR_OVERDUE_TOTAL_INT is NULL;
-
-## 最高逾期期数 MAX_OVERDUE_INT
--- 所有已经产生的逾期期数中，取最大值
-UPDATE tmp_overdue 
-inner JOIN (
-    SELECT
-        a.ProjectID,
-        a.Peroid,
-        MAX(b.CUR_OVERDUE_TOTAL_INT) AS MAX_OVERDUE_INT
-    FROM
-        tmp_overdue a
-    JOIN tmp_overdue b
-    WHERE
-        a.ProjectID = b.ProjectID
-        AND b.Peroid <= a.Peroid
-    GROUP BY
-        a.ProjectID,
-        a.Peroid 
-)as up_tab ON
-    tmp_overdue.ProjectID = up_tab.ProjectID
-    AND tmp_overdue.Peroid = up_tab.Peroid 
-SET
-    tmp_overdue.MAX_OVERDUE_INT = up_tab.MAX_OVERDUE_INT;
-   
- 
-## -- == 累计逾期期数
-UPDATE
-    tmp_overdue
-inner JOIN (
-    SELECT
-        a.PROJECT_ID,
-        a.PERIOD ,
-        sum(b.OVERDUE_DAYS) as total_overdue
-    FROM
-        SETT_REPAYMENT_PLAN a
-    JOIN SETT_REPAYMENT_PLAN b
-    WHERE
-        a.PROJECT_ID = b.PROJECT_ID
-        AND a.PROJECT_ID in (
-        SELECT
-            DISTINCT PROJECT_ID
-        FROM
-            tmp_overdue_projects )
-        and b.PERIOD <= a.PERIOD
-    group by
-        a.PROJECT_ID ,
-        a.PERIOD )as up_tab ON
-    tmp_overdue.ProjectID = up_tab.PROJECT_ID
-    AND tmp_overdue.Peroid = up_tab.PERIOD 
-SET
-    tmp_overdue.SUM_OVERDUE_INT = up_tab.total_overdue;   
-   
-   
    
 ##############################
 ## -- 五级分类状态，从低级开始更新
@@ -922,7 +843,7 @@ SET
 -- 为减少影响，这条放在所有数据处理完后，最后再执行
 INSERT
     INTO
-    small_core_like_prod.tmp_overdue (ProjectID,
+    tmp_overdue (ProjectID,
     Peroid,
     over_day_count,
     FINORGCODE,
@@ -1049,171 +970,54 @@ SET
 
 
    
-   
-   
-   
+ 
    
 ## -- 逾期31-60天未归还贷款本金 -- 逾期31天未还清 > 0，但60天已还清 = 0
     -- 逾期61-90天未归还贷款本金  -- 逾期61天未还清，但90天已还清
     -- 逾期91-180天未归还贷款本金
     -- 逾期180天以上未归还贷款本金
+    -- SELECT * from tmp_RECEIPT_PLAN_till_now;
+DROP TABLE IF EXISTS tmp_RECEIPT_PLAN_till_now;
+CREATE TEMPORARY TABLE tmp_RECEIPT_PLAN_till_now 
+(
+	select trptn.PROJECT_ID , trptn.PERIOD , srrp.RECEIPT_PLAN_DATE, srrp.RECEIPT_PLAN_ID -- , srrpd.RECEIPT_AMOUNT_IT
+	FROM 
+	tmp_repay_plan_till_now trptn
+	left join
+	SETT_RENT_RECEIPT_PLAN srrp
+	on trptn.PROJECT_ID = srrp.PROJECT_ID 
+	and trptn.PERIOD = srrp.PERIOD
+	WHERE trptn.PROJECT_ID  in (SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects )
+	order by  trptn.PROJECT_ID , trptn.PERIOD 
+);
+
+-- SELECT * from tmp_RECEIPT_PLAN_DETAIL_PRI order by PROJECT_ID;
+DROP TABLE IF EXISTS tmp_RECEIPT_PLAN_DETAIL_PRI;
+CREATE TEMPORARY TABLE tmp_RECEIPT_PLAN_DETAIL_PRI 
+(
+	select RENT_RECEIPT_PLAN_ID, PROJECT_ID, RECEIPT_AMOUNT_IT
+	FROM SETT_RENT_RECEIPT_PLAN_DETAIL
+	WHERE SUBJECT = 'PRI' AND PROJECT_ID in (SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects )
+);
     
 ### -- 项目本金表，每一期的本金计划
+-- SELECT * from tmp_project_period_prin;
 DROP TABLE IF EXISTS tmp_project_period_prin;
-CREATE TEMPORARY TABLE tmp_project_period_prin 
+CREATE  TABLE tmp_project_period_prin 
 (
-SELECT
-    srrp.PROJECT_ID ,
-    srrp.PERIOD ,
-    srrp.RECEIPT_PLAN_DATE,
-    srrpd.RECEIPT_AMOUNT_IT
-FROM
-    SETT_RENT_RECEIPT_PLAN srrp ,
-    SETT_RENT_RECEIPT_PLAN_DETAIL srrpd
-WHERE
-    srrp.RECEIPT_PLAN_ID = srrpd.RENT_RECEIPT_PLAN_ID
-    and srrpd.SUBJECT = 'PRI'
-    and srrpd.PROJECT_ID in ( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects )
-order by
-    srrp.PROJECT_ID,
-    srrp.PERIOD );
-   
-   
--- SELECT  * from   tmp_project_period_prin where PROJECT_ID = '201903060530179282A';
--- 逾期31 - 60的
-DROP TABLE if exists overdue_31to60;
-CREATE TEMPORARY TABLE overdue_31to60
-(
-SELECT 
-a.ProjectID as PROJECT_ID,
-(a.overdue_period+1) as PERIOD,
-b.RECEIPT_AMOUNT_IT,
-a.paid_amt,
-(b.RECEIPT_AMOUNT_IT - IFNULL(a.paid_amt, 0)) as overdue_amt
-FROM (
-SELECT
-    overdue_during.ProjectID,
-    overdue_during.Peroid,
-    overdue_during.overdue_period,
-    IFNULL(sum(rid.PAID_PRIN_AMT), 0) as paid_amt
-FROM
-    (
-    -- 上报的期
-    select *, 
-    (Peroid -1 ) as overdue_period  -- 逾期31-60的那期，要计算本金的
-    from tmp_overdue
-    WHERE
-        (ProjectID , Peroid ) in (
-        -- 逾期 31 - 60 的期
-        SELECT
-            ProjectID ,
-            (Peroid + 1) as Peroid   -- 上报的那期
-        from
-            tmp_overdue
-        where
-            over_day_count BETWEEN 31 AND 60 ) 
-    ) overdue_during 
-    LEFT JOIN tmp_repay_instmnt rid 
-    on rid.PROJECT_ID = overdue_during.ProjectID
-    AND rid.PERIOD = overdue_during.overdue_period
--- where
---  (rid.REPAY_DATE <= overdue_during.PLAN_REPAY_DT) or rid.REPAY_DATE is null
-GROUP BY
-    ProjectID,
-    Peroid
-) a , tmp_project_period_prin b
-WHERE a.ProjectID = b.PROJECT_ID
-and a.overdue_period = b.PERIOD
+	select trptn.PROJECT_ID, trptn.PERIOD, ifnull(trpdp.RECEIPT_AMOUNT_IT, 0) as RECEIPT_AMOUNT_IT,  trptn.RECEIPT_PLAN_DATE
+	FROM 
+	tmp_RECEIPT_PLAN_till_now trptn
+	left join 
+	tmp_RECEIPT_PLAN_DETAIL_PRI trpdp
+	on trptn.RECEIPT_PLAN_ID = trpdp.RENT_RECEIPT_PLAN_ID
+	order by PROJECT_ID, PERIOD
 );
 
--- SELECT * from  overdue_31to60 where PROJECT_ID ='201901030457792105A';
 
 
-UPDATE
-    tmp_overdue
-INNER JOIN (
-    select
-        PROJECT_ID,
-        PERIOD,
-        overdue_amt
-    FROM
-        overdue_31to60
-    GROUP by
-        PROJECT_ID,
-        PERIOD ) as up_tab ON
-    tmp_overdue.ProjectID = up_tab.PROJECT_ID
-    AND tmp_overdue.Peroid = up_tab.PERIOD 
-    SET
-    OVERDUE31_60DAYS_AMT = up_tab.overdue_amt;
-    
+CALL gen_overdue_30_180_amt;
 
--- 逾期61 - 90的
-DROP TABLE if exists overdue_61to90;
-CREATE TEMPORARY TABLE overdue_61to90
-(
-SELECT 
-a.ProjectID as PROJECT_ID,
-(a.overdue_period+2) as PERIOD,
-b.RECEIPT_AMOUNT_IT,
-a.paid_amt,
-(b.RECEIPT_AMOUNT_IT - a.paid_amt) as overdue_amt
-FROM (
-SELECT
-    overdue_during.ProjectID,
-    overdue_during.Peroid,
-    overdue_during.overdue_period,
-    sum(rid.PAID_PRIN_AMT) as paid_amt
-FROM
-    tmp_repay_instmnt rid ,
-    (
-    -- 上报的期
-    select *, 
-    (Peroid -2 ) as overdue_period  -- 逾期31-60的那期，要计算本金的
-    from tmp_overdue
-    WHERE
-        (ProjectID , Peroid ) in (
-        -- 逾期 31 - 60 的期
-        SELECT
-            ProjectID ,
-            (Peroid + 2) as Peroid   -- 上报的那期
-        from
-            tmp_overdue
-        where
-            over_day_count BETWEEN 61 AND 90 ) 
-    ) overdue_during
-where
-    rid.PROJECT_ID = overdue_during.ProjectID
-    AND rid.PERIOD = overdue_during.overdue_period
-    AND rid.REPAY_DATE <= overdue_during.PLAN_REPAY_DT
-GROUP BY
-    ProjectID,
-    Peroid
-) a , tmp_project_period_prin b
-WHERE a.ProjectID = b.PROJECT_ID
-and a.overdue_period = b.PERIOD
-);
-
--- SELECT * from  overdue_61to90;
-
-UPDATE
-    tmp_overdue
-INNER JOIN (
-    select
-        PROJECT_ID,
-        PERIOD,
-        overdue_amt
-    FROM
-        overdue_61to90
-    GROUP by
-        PROJECT_ID,
-        PERIOD ) as up_tab ON
-    tmp_overdue.ProjectID = up_tab.PROJECT_ID
-    AND tmp_overdue.Peroid = up_tab.PERIOD 
-    SET
-    OVERDUE61_90DAYS_AMT = up_tab.overdue_amt;   
-   
-   
-   
 
 UPDATE tmp_overdue set OVERDUE31_60DAYS_AMT=0 WHERE OVERDUE31_60DAYS_AMT is NULL;
 UPDATE tmp_overdue set OVERDUE61_90DAYS_AMT=0 WHERE OVERDUE61_90DAYS_AMT is NULL;
@@ -1221,10 +1025,14 @@ UPDATE tmp_overdue set OVERDUE91_180DAYS_AMT=0 WHERE OVERDUE91_180DAYS_AMT is NU
 UPDATE tmp_overdue set OVERDUE_180DAYS_AMT=0 WHERE OVERDUE_180DAYS_AMT is NULL;
 
 
-DELETE FROM tmp_overdue WHERE over_day_count <0;
+DELETE 
+-- SELECT * 
+FROM tmp_overdue WHERE over_day_count <0;
 
+
+#####################
 # 执行Python 代码 
-python MONTH_24_STAT.py
-
+-- python MONTH_24_STAT.py
+#####################
 
 
