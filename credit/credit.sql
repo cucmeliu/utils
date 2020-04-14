@@ -90,11 +90,6 @@ WHERE
 		and x.PLAN_STATUS = 2
 		and x.OVERDUE_DAYS = 1
 		and y.CURR_PRIN_BAL = y.PAID_PRIN_AMT
--- 	order by
--- 		x.PROJECT_ID ,
--- 		x.PERIOD
-		) 
-    --  AND rrp.WRITE_STATUS=2
     ORDER BY overdue_days DESC 
 );
 
@@ -102,7 +97,9 @@ WHERE
 ## -- 所有当前逾期的项目
 DROP table IF EXISTS tmp_overdue_projects;
 CREATE TABLE tmp_overdue_projects 
-( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_rpt );
+( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_rpt 
+-- WHERE REPAYMENT_DATE = DATE_SUB(curdate(),INTERVAL 1 DAY)
+);
 
 ## -- 当前逾期项目的查询字段
 -- AND PROJECT_ID in ( SELECT DISTINCT PROJECT_ID FROM tmp_overdue_projects )
