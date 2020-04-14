@@ -97,16 +97,16 @@ try:
                             c_str = c_str + str(c+1)
                             # c_str = c_str + ('N' if(p - c - 1==0) else str(p - c - 1))
                             i = i + 1
-                    logging.info('-------i: ' + str(i) + ' , c_str:' + c_str)
+                    # logging.info('-------i: ' + str(i) + ' , c_str:' + c_str)
                 print('c_str:' + c_str)
-                logging.info('c_str:' + c_str)
+                # logging.info('c_str:' + c_str)
             
 
                 for m in range(len(over_duration_period)):
                     c_s = orig_str[m+1:len(orig_str)] + c_str[:m+1]
                     m24_status.append(c_s)
                     print(c_s)
-                    logging.info(c_s)
+                    # logging.info(c_s)
 
                     # 写入数据库
                     update_str = 'UPDATE tmp_overdue SET REPAY_MONTH_24_STAT="' +  c_s + '" WHERE ProjectID = "' + cur_project_id + '" AND Peroid = ' + str(periods[m])
@@ -129,7 +129,7 @@ try:
         LOAN_STAT.append(line[3])
 
         print('project:' + str(line[0]) + ' - period:' + str(line[1]) + '- dur_period:' + str(dur_period))
-        logging.info('project:' + str(line[0]) + ' - period:' + str(line[1]) + '- dur_period:' + str(dur_period))
+        # logging.info('project:' + str(line[0]) + ' - period:' + str(line[1]) + '- dur_period:' + str(dur_period))
     
     # 处理最后一个项目
     print('--- deal with project: ' + cur_project_id)
@@ -138,7 +138,7 @@ try:
         i = 0
         while i < len(over_duration_period):
             p = over_duration_period[i]
-            logging.info('-------p' + str(i) + ' = ' + str(p))
+            # logging.info('-------p' + str(i) + ' = ' + str(p))
 
             if (LOAN_STAT[i]==3):
                 c_str = c_str + 'C'
@@ -154,16 +154,16 @@ try:
                     c_str = c_str + str(c+1)
                     # c_str = c_str + ('N' if(p - c - 1==0) else str(p - c - 1))
                     i = i + 1
-            logging.info('-------i: ' + str(i) + ' , c_str:' + c_str)
+            # logging.info('-------i: ' + str(i) + ' , c_str:' + c_str)
         print('c_str:' + c_str)
-        logging.info('c_str:' + c_str)
+        # logging.info('c_str:' + c_str)
     
 
         for m in range(len(over_duration_period)):
             c_s = orig_str[m+1:len(orig_str)] + c_str[:m+1]
             m24_status.append(c_s)
             print(c_s)
-            logging.info(c_s)
+            # logging.info(c_s)
 
             # 写入数据库
             update_str = 'UPDATE tmp_overdue SET REPAY_MONTH_24_STAT="' +  c_s + '" WHERE ProjectID = "' + cur_project_id + '" AND Peroid = ' + str(periods[m])

@@ -1,0 +1,89 @@
+04/14/2020 11:08:11 AM - INFO - starting...
+04/14/2020 11:11:24 AM - INFO - starting...
+04/14/2020 11:11:31 AM - INFO - IMPORT FILE: D:\download\2020年网商银行流水.xlsx
+04/14/2020 11:11:31 AM - INFO - connect to database 
+04/14/2020 11:11:31 AM - INFO - Query: INSERT INTO orders (product, customer_type, rep, date, actual, expected, open_opportunities, closed_opportunities, city, state, zip, population, region) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+04/14/2020 11:11:31 AM - INFO - read from EXCEL 
+04/14/2020 11:11:31 AM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "excel2db.py", line 66, in <module>
+    for r in wb2.rows:
+AttributeError: 'Workbook' object has no attribute 'rows'
+
+04/14/2020 11:11:31 AM - INFO - closeing database 
+04/14/2020 11:11:31 AM - INFO - closeing database: done 
+04/14/2020 11:14:33 AM - INFO - starting...
+04/14/2020 11:14:39 AM - INFO - IMPORT FILE: D:\download\2020年网商银行流水.xlsx
+04/14/2020 11:14:39 AM - INFO - connect to database 
+04/14/2020 11:14:39 AM - INFO - Query: INSERT INTO orders (product, customer_type, rep, date, actual, expected, open_opportunities, closed_opportunities, city, state, zip, population, region) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+04/14/2020 11:14:40 AM - INFO - read from EXCEL 
+04/14/2020 11:14:46 AM - INFO - write to excel file: done 
+04/14/2020 11:14:46 AM - INFO - closeing database 
+04/14/2020 11:14:46 AM - INFO - closeing database: done 
+04/14/2020 11:22:51 AM - INFO - starting...
+04/14/2020 11:22:58 AM - INFO - IMPORT FILE: D:\download\2020年网商银行流水.xlsx
+04/14/2020 11:22:58 AM - INFO - connect to database 
+04/14/2020 11:22:58 AM - INFO - Query: INSERT INTO orders (product, customer_type, rep, date, actual, expected, open_opportunities, closed_opportunities, city, state, zip, population, region) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+04/14/2020 11:22:58 AM - INFO - read from EXCEL 
+04/14/2020 11:23:07 AM - INFO - write to excel file: done 
+04/14/2020 11:23:07 AM - INFO - closeing database 
+04/14/2020 11:23:07 AM - INFO - closeing database: done 
+04/14/2020 11:24:56 AM - INFO - starting...
+04/14/2020 11:25:03 AM - INFO - IMPORT FILE: D:\download\2020年网商银行流水.xlsx
+04/14/2020 11:25:03 AM - INFO - connect to database 
+04/14/2020 11:25:03 AM - INFO - Query: INSERT INTO orders (product, customer_type, rep, date, actual, expected, open_opportunities, closed_opportunities, city, state, zip, population, region) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+04/14/2020 11:25:03 AM - INFO - read from EXCEL 
+04/14/2020 11:25:28 AM - INFO - starting...
+04/14/2020 11:25:35 AM - INFO - IMPORT FILE: D:\download\2020年网商银行流水.xlsx
+04/14/2020 11:25:35 AM - INFO - connect to database 
+04/14/2020 11:25:35 AM - INFO - Query: INSERT INTO orders (product, customer_type, rep, date, actual, expected, open_opportunities, closed_opportunities, city, state, zip, population, region) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+04/14/2020 11:25:35 AM - INFO - read from EXCEL 
+04/14/2020 12:35:23 PM - INFO - starting...
+04/14/2020 12:35:30 PM - INFO - IMPORT FILE: D:\download\2020年网商银行流水.xlsx
+04/14/2020 12:35:30 PM - INFO - connect to database 
+04/14/2020 12:35:30 PM - INFO - Query: INSERT INTO tmp_bank_flow (flow_id, trade_time, trade_type, trade_amt, user_name, account, trade_name, memo, trade_status, fail_reason) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+04/14/2020 12:35:30 PM - INFO - read from EXCEL 
+04/14/2020 12:35:30 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "excel2db.py", line 69, in <module>
+    cursor.execute(query, values)
+  File "C:\Users\cn_lc\AppData\Local\Programs\Python\Python38\lib\site-packages\pymysql\cursors.py", line 168, in execute
+    query = self.mogrify(query, args)
+  File "C:\Users\cn_lc\AppData\Local\Programs\Python\Python38\lib\site-packages\pymysql\cursors.py", line 147, in mogrify
+    query = query % self._escape_args(args, conn)
+TypeError: not enough arguments for format string
+
+04/14/2020 12:35:30 PM - INFO - closeing database 
+04/14/2020 12:35:30 PM - INFO - closeing database: done 
+04/14/2020 12:37:45 PM - INFO - starting...
+04/14/2020 12:37:52 PM - INFO - IMPORT FILE: D:\download\2020年网商银行流水.xlsx
+04/14/2020 12:37:52 PM - INFO - connect to database 
+04/14/2020 12:37:52 PM - INFO - Query: INSERT INTO tmp_bank_flow (flow_id, trade_time, trade_type, trade_amt, user_name, account, trade_name, memo, trade_status, fail_reason) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+04/14/2020 12:37:52 PM - INFO - read from EXCEL 
+04/14/2020 12:37:52 PM - INFO - transfer from excel to db: done 
+04/14/2020 12:37:52 PM - INFO - closeing database 
+04/14/2020 12:37:52 PM - INFO - closeing database: done 
+04/14/2020 12:38:15 PM - INFO - starting...
+04/14/2020 12:38:22 PM - INFO - IMPORT FILE: D:\download\2020年网商银行流水.xlsx
+04/14/2020 12:38:22 PM - INFO - connect to database 
+04/14/2020 12:38:22 PM - INFO - Query: INSERT INTO tmp_bank_flow (flow_id, trade_time, trade_type, trade_amt, user_name, account, trade_name, memo, trade_status, fail_reason) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+04/14/2020 12:38:22 PM - INFO - read from EXCEL 
+04/14/2020 14:09:02 PM - INFO - starting...
+04/14/2020 14:09:09 PM - INFO - IMPORT FILE: D:\download\2020年网商银行流水.xlsx
+04/14/2020 14:09:09 PM - INFO - connect to database 
+04/14/2020 14:09:09 PM - INFO - Query: INSERT INTO tmp_bank_flow (flow_id, trade_time, trade_type, trade_amt, user_name, account, trade_name, memo, trade_status, fail_reason) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+04/14/2020 14:09:09 PM - INFO - read from EXCEL 
+04/14/2020 14:09:09 PM - WARNING - exec failed, failed msg:Traceback (most recent call last):
+  File "excel2db.py", line 69, in <module>
+    cursor.execute(query, values)
+  File "C:\Users\cn_lc\AppData\Local\Programs\Python\Python38\lib\site-packages\pymysql\cursors.py", line 168, in execute
+    query = self.mogrify(query, args)
+  File "C:\Users\cn_lc\AppData\Local\Programs\Python\Python38\lib\site-packages\pymysql\cursors.py", line 147, in mogrify
+    query = query % self._escape_args(args, conn)
+TypeError: not enough arguments for format string
+
+04/14/2020 14:09:09 PM - INFO - closeing database 
+04/14/2020 14:09:09 PM - INFO - closeing database: done 
+04/14/2020 14:10:02 PM - INFO - starting...
+04/14/2020 14:10:09 PM - INFO - IMPORT FILE: D:\download\2020年网商银行流水.xlsx
+04/14/2020 14:10:09 PM - INFO - connect to database 
+04/14/2020 14:10:09 PM - INFO - Query: INSERT INTO tmp_bank_flow (flow_id, trade_time, trade_type, trade_amt, user_name, account, trade_name, memo, trade_status, fail_reason) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+04/14/2020 14:10:10 PM - INFO - read from EXCEL 

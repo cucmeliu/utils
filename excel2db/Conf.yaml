@@ -1,0 +1,21 @@
+﻿# 日志
+LOG:
+    LOG_FORMAT: '%(asctime)s - %(levelname)s - %(message)s'
+    DATE_FORMAT: '%m/%d/%Y %H:%M:%S %p'
+    LOG_PATH: '.\'
+
+# 数据库
+DB:
+    HOST:  172.16.0.200
+    USER: root
+    PWD:  mysql
+    DB: small_core_leo
+    SQL: INSERT INTO tmp_bank_flow (flow_id, trade_time, trade_type, trade_amt, user_name, account, trade_name, memo, trade_status, fail_reason) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+
+# 导入的Excel
+EXCEL:    
+    FILE_PATH: 'D:\download\'
+    # FILE_BASE: 'STUDENT_'
+    FILE_NAME: '2020年网商银行流水.xlsx'
+    SHEET_NAME: 'Sheet1'
+    
