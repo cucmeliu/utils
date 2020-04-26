@@ -55,11 +55,21 @@ try:
     conn.commit()
 
     logging.info("read from EXCEL ")
-    for r in ws.iter_rows(min_row=2, min_col=1):     
-        values = (r[0].value, r[1].value, r[2].value, r[3].value, r[4].value,
+    list = []
+
+    for r in ws.iter_rows(min_row=2, min_col=1):
+        data=(r[0].value, r[1].value, r[2].value, r[3].value, r[4].value,
             r[5].value, r[6].value, r[7].value, r[8].value, r[9].value)
-        cursor.execute(query, values)
-     
+        list.append(data)
+        # 单条插入，太慢了
+        # values = (r[0].value, r[1].value, r[2].value, r[3].value, r[4].value,
+        #     r[5].value, r[6].value, r[7].value, r[8].value, r[9].value)
+        # cursor.execute(query, values)
+    if (len(list) > 0):
+        cursor.executemany(query, list)
+        # 提交
+        conn.commit()
+
     logging.info("transfer from excel to db: done ")
 
 except Exception as e:
@@ -69,8 +79,6 @@ except Exception as e:
 logging.info("closeing database ")
 # 关闭游标
 cursor.close()
-# 提交
-conn.commit()
 # 关闭数据库连接
 conn.close()
 logging.info("closeing database: done ")
