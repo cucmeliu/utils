@@ -19,24 +19,25 @@ print('conf---')
 print(conf)
 
 # 设置日志
-LOG_FORMAT = conf['LOG']['LOG_FORMAT'] # "%(asctime)s - %(levelname)s - %(message)s"
+LOG_FORMAT  = conf['LOG']['LOG_FORMAT'] # "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = conf['LOG']['DATE_FORMAT'] # "%m/%d/%Y %H:%M:%S %p"
-LOG_PATH = conf['LOG']['LOG_PATH']
+LOG_PATH    = conf['LOG']['LOG_PATH']
 logging.basicConfig(filename=LOG_PATH + 'log.log', level=logging.INFO, format=LOG_FORMAT, datefmt=DATE_FORMAT)
 logging.info("starting...")
 
 # 数据库信息
-host = conf['DB']['HOST'] # '172.16.0.52'  
-user = conf['DB']['USER'] # 'query01'  
-pwd = conf['DB']['PWD'] # 'query01'  
-db = conf['DB']['DB'] # 'small_core'  
-query = conf['DB']['SQL'] # 'select * from VIEW_REPORT_PROJECT_RENT'  
+host    = conf['DB']['HOST'] # '172.16.0.52'  
+user    = conf['DB']['USER'] # 'query01'  
+pwd     = conf['DB']['PWD'] # 'query01'  
+db      = conf['DB']['DB'] # 'small_core'  
+table   = conf['DB']['TABLE'] # table name
+query   = conf['DB']['SQL'] 
 
 # excel 信息
-in_file = conf['EXCEL']['FILE_PATH'] + conf['EXCEL']['FILE_NAME']
-sheet_name = conf['EXCEL']['SHEET_NAME'] 
-wb2 = load_workbook(in_file)
-ws = wb2[sheet_name]
+in_file     = conf['EXCEL']['FILE_PATH'] + conf['EXCEL']['FILE_NAME']
+sheet_name  = conf['EXCEL']['SHEET_NAME'] 
+wb2         = load_workbook(in_file)
+ws          = wb2[sheet_name]
 # 
 logging.info("IMPORT FILE: " + in_file)
 
@@ -48,29 +49,17 @@ conn = MySQLdb.connect(host, user, pwd, db, charset='utf8')
 # 获得游标对象, 用于逐行遍历数据库数据
 cursor = conn.cursor()  
 try:
+    # 先清空表
+    logging.info("TRUNCATE table ")
+    cursor.execute("TRUNCATE table " + table)
+    conn.commit()
+
     logging.info("read from EXCEL ")
-
-    for r in ws.iter_rows(min_row=2, min_col=1):
-        # for c in r:
-        #     print(c.value, end= " ")
-        # print()
-        c0 = r[0].value
-        c1 = r[1].value
-        c2 = r[2].value
-        c3 = r[3].value
-        c4 = r[4].value
-        c5 = r[5].value
-        c6 = r[6].value
-        c7 = r[7].value
-        c8 = r[8].value
-        c9 = r[9].value
-       
-        values = (c0, c1, c2, c3, c4, c5, c6, c7, c8, c9)
+    for r in ws.iter_rows(min_row=2, min_col=1):     
+        values = (r[0].value, r[1].value, r[2].value, r[3].value, r[4].value,
+            r[5].value, r[6].value, r[7].value, r[8].value, r[9].value)
         cursor.execute(query, values)
-        # print(values)
-        # print()
-
-    
+     
     logging.info("transfer from excel to db: done ")
 
 except Exception as e:

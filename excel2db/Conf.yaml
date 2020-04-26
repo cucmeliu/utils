@@ -10,7 +10,10 @@ DB:
     USER: root
     PWD:  mysql
     DB: small_core_leo
+    TABLE: tmp_bank_flow
     SQL: INSERT INTO tmp_bank_flow (flow_id, trade_time, trade_type, trade_amt, user_name, account, trade_name, memo, trade_status, fail_reason) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    # 列数量
+    COLUMNS: 10 
 
 # 导入的Excel
 EXCEL:    
