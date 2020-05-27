@@ -1,4 +1,4 @@
-CREATE DEFINER=`root`@`%` PROCEDURE `small_core_leo`.`Add_Overdue_Period`()
+CREATE PROCEDURE small_core.sp_add_overdue_period()
 BEGIN
 	
 	
@@ -12,11 +12,16 @@ BEGIN
 
 	-- 1. 找出最后一期已经逾期的
 	DECLARE cur CURSOR FOR (
-		SELECT ProjectID, MAX(Peroid) as mp, ENDDATE FROM 
-		tmp_overdue to2 
-		WHERE 
-		ENDDATE < NOW() 
-		GROUP by ProjectID 
+-- 		SELECT ProjectID, MAX(Peroid) as mp, MAX(ENDDATE) as md FROM 
+-- 		tmp_overdue to2 
+-- 		WHERE 
+-- 		ENDDATE < NOW() 
+-- 		GROUP by ProjectID 
+
+		SELECT PROJECT_ID, max(PERIOD) as mp, MAX(RECEIPT_PLAN_DATE) as md
+		FROM tmp_SETT_RENT_RECEIPT_PLAN
+		WHERE RECEIPT_PLAN_DATE < NOW()
+		GROUP by PROJECT_ID
 	);
 
 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1; 
@@ -73,5 +78,4 @@ BEGIN
 
 	END LOOP read_loop;
     CLOSE cur; 
-
 END

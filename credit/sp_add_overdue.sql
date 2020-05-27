@@ -1,4 +1,4 @@
-CREATE DEFINER=`root`@`%` PROCEDURE `small_core_leo`.`add_overdue`()
+CREATE PROCEDURE small_core.sp_add_overdue()
 BEGIN
 	
 	
@@ -12,8 +12,8 @@ BEGIN
 
 	-- 1. 找出最后一期已经逾期的
 	DECLARE cur CURSOR FOR (
-		SELECT PROJECT_ID, MAX(PERIOD) as mp, REPAYMENT_DATE FROM 
-		tmp_overdue_rpt to2 
+		SELECT PROJECT_ID, MAX(PERIOD) as mp, max(REPAYMENT_DATE) FROM 
+		tmp_repay_plan_till_now to2 
 		WHERE 
 		REPAYMENT_DATE < NOW() 
 		GROUP by PROJECT_ID 
@@ -37,7 +37,7 @@ BEGIN
 		
 		if (@i >= 1) then 
 			-- PLAN_REPAY_AMT到期后，为所欠全部金额
- 			set @t_PLAN_END_DATE  = last_day(date_add(v_ENDDATE,interval @i month));
+ 			set @t_PLAN_END_DATE  = last_day(date_add(v_ENDDATE, interval @i month));
 			
 			set @paid_rent = ifnull(( SELECT sum(PAID_PRIN_AMT+PAID_INT_AMT)  FROM tmp_repay_instmnt WHERE PROJECT_ID= v_PROJECT_ID and REPAY_DATE<=@t_PLAN_END_DATE), 0);
 			set @except_amt = @total_rent - @paid_rent;	-- 本次期望
@@ -105,5 +105,4 @@ BEGIN
 
 	END LOOP read_loop;
     CLOSE cur; 
-
 END

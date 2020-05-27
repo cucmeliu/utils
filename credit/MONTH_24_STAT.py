@@ -168,7 +168,7 @@ try:
             # 写入数据库
             update_str = 'UPDATE tmp_overdue SET REPAY_MONTH_24_STAT="' +  c_s + '" WHERE ProjectID = "' + cur_project_id + '" AND Peroid = ' + str(periods[m])
 
-            print(update_str)
+            # print(update_str)
             update_cursor.execute(update_str)
 
     conn.commit()   
