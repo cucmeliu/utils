@@ -111,7 +111,7 @@ try:
                     # 写入数据库
                     update_str = 'UPDATE tmp_overdue SET REPAY_MONTH_24_STAT="' +  c_s + '" WHERE ProjectID = "' + cur_project_id + '" AND Peroid = ' + str(periods[m])
 
-                    print(update_str)
+                    # print(update_str)
                     update_cursor.execute(update_str)
 
             # 初始化下一个新的项目
@@ -184,3 +184,4 @@ update_cursor.close
 cursor.close
 conn.close
 logging.info("closeing database: done ")
+print('--end')

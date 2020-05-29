@@ -1,0 +1,27 @@
+﻿# 日志
+LOG:
+    LOG_FORMAT: '%(asctime)s - %(levelname)s - %(message)s'
+    DATE_FORMAT: '%m/%d/%Y %H:%M:%S %p'
+    LOG_PATH: './'
+
+GLOBAL: 
+    # 是否先清空目标表
+    IS_TRUNC_DEST: true
+
+# src数据库
+SRC_DB:
+    HOST:   172.16.0.50
+    USER:   root
+    PWD:    mysql
+    DB:     small_core
+    TABLE:  tmp_overdue_projects
+    SQL:    SELECT PROJECT_ID FROM tmp_overdue_projects 
+
+# dest数据库
+DEST_DB:
+    HOST:   172.16.0.50
+    USER:   root
+    PWD:    mysql
+    DB:     finance_lease_apply
+    TABLE:  tmp_overdue_projects
+    SQL:    INSERT INTO tmp_overdue_projects (PROJECT_ID) VALUES (%s)
