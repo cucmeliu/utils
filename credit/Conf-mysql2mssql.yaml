@@ -13,13 +13,13 @@ SRC_DB:
     HOST:   172.16.0.50
     USER:   root
     PWD:    mysql
-    DB:     finance_lease_apply
+    DB:     small_core
     # 地址
     # TABLE:  V_CREDIT_ADDRESS
     # SQL:    SELECT * FROM V_CREDIT_ADDRESS 
     # 职业
-    TABLE:  V_CREDIT_OCCUPATION
-    SQL:    SELECT * FROM V_CREDIT_OCCUPATION 
+    # TABLE:  V_CREDIT_OCCUPATION
+    # SQL:    SELECT * FROM V_CREDIT_OCCUPATION 
     # 身份
     # TABLE:  V_CREDIT_IDENTITY
     # SQL:    SELECT * FROM V_CREDIT_IDENTITY 
@@ -27,8 +27,8 @@ SRC_DB:
     # TABLE:  V_CREDIT_LOAN_DETAIL
     # SQL:    SELECT * FROM V_CREDIT_LOAN_DETAIL 
     # 特殊交易
-    # TABLE:  V_CREDIT_SPEC_EVENT
-    # SQL:    SELECT * FROM V_CREDIT_SPEC_EVENT 
+    TABLE:  V_CREDIT_SPEC_EVENT
+    SQL:    SELECT * FROM V_CREDIT_SPEC_EVENT 
 
 
 # dest数据库
@@ -41,8 +41,8 @@ DEST_DB:
     # TABLE:  V_P_CRS_ADRESS_INFO
     # SQL:    INSERT INTO V_P_CRS_ADRESS_INFO  VALUES (%s, %s, %s, %s, %s)
     # 职业
-    TABLE:  V_P_CRS_PROFESSION_INFO
-    SQL:    INSERT INTO V_P_CRS_PROFESSION_INFO  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    # TABLE:  V_P_CRS_PROFESSION_INFO
+    # SQL:    INSERT INTO V_P_CRS_PROFESSION_INFO  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     # 身份
     # TABLE:  V_P_CRS_IDENTITY_INFO
     # SQL:    INSERT INTO V_P_CRS_IDENTITY_INFO  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -50,5 +50,5 @@ DEST_DB:
     # TABLE:  V_P_CRS_LOAN_DTL
     # SQL:    INSERT INTO V_P_CRS_LOAN_DTL  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     # 特殊交易
-    # TABLE:  V_P_CRS_ADRESS_INFO
-    # SQL:    INSERT INTO V_P_CRS_ADRESS_INFO  VALUES (%s, %s, %s, %s, %s)
+    TABLE:  V_P_CRS_LOAN_SPEC_EVENT
+    SQL:    INSERT INTO V_P_CRS_LOAN_SPEC_EVENT  VALUES (%s, %s, %s, %s, %s, %s, %s)

@@ -1,4 +1,8 @@
+#__author: liuchunming
+#date: 2020/05/28
+
 # coding:utf8  
+
 import sys  
 # import openpyxl
 #import MySQLdb
@@ -12,19 +16,21 @@ import traceback
 
 # 将一个表的数据从一个库转到另一个库
 
-f       = open('Conf-mysql2mssql.yaml', encoding='utf-8')
+myname = sys.argv[0]
+
+f       = open('Conf-'+myname+'.yaml', encoding='utf-8')
 conf    = yaml.load(f, Loader=yaml.FullLoader)
 
-print('conf---')
-print(conf)
+# print('conf---')
+# print(f.)
 
 # 设置日志
 LOG_FORMAT  = conf['LOG']['LOG_FORMAT'] # "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = conf['LOG']['DATE_FORMAT'] # "%m/%d/%Y %H:%M:%S %p"
 LOG_PATH    = conf['LOG']['LOG_PATH']
-
 logging.basicConfig(filename=LOG_PATH + 'log.log', level=logging.INFO, format=LOG_FORMAT, datefmt=DATE_FORMAT)
-logging.info("starting...")
+logging.info("start..."+myname)
+print("start..."+myname)
 
 # global参数
 IS_TRUNC_DEST = conf['GLOBAL']['IS_TRUNC_DEST']
@@ -92,4 +98,6 @@ src_cursor.close
 dest_db.close
 src_db.close
 logging.info("closeing database: done ")
-print('end---')
+
+logging.info("done!")
+print("done!")

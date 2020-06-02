@@ -9,20 +9,22 @@ import logging
 import yaml
 import traceback
 
-f       = open('Conf-call-process.yaml', encoding='utf-8')
+myname = sys.argv[0]
+
+f       = open('Conf-'+myname+'.yaml', encoding='utf-8')
+# f       = open('Conf-call-process.yaml', encoding='utf-8')
 conf    = yaml.load(f, Loader=yaml.FullLoader)
 
-print('conf---')
-print(conf)
+# print('conf---')
+# print(conf)
 
 # 设置日志
 LOG_FORMAT  = conf['LOG']['LOG_FORMAT'] # "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = conf['LOG']['DATE_FORMAT'] # "%m/%d/%Y %H:%M:%S %p"
 LOG_PATH    = conf['LOG']['LOG_PATH']
-
 logging.basicConfig(filename=LOG_PATH + 'log.log', level=logging.INFO, format=LOG_FORMAT, datefmt=DATE_FORMAT)
-logging.info("starting...")
-
+logging.info("start..."+myname)
+print("start..."+myname)
 # global参数
 # IS_TRUNC_DEST = conf['GLOBAL']['IS_TRUNC_DEST']
 
@@ -44,4 +46,7 @@ db.commit()
 # data = cursor.fetchall()
 # 关闭数据库连接
 db.close()
-print('end---')
+logging.info("closeing database: done ")
+
+logging.info("done!")
+print("done!")

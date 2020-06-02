@@ -1,3 +1,6 @@
+#__author: liuchunming
+#date: 2020/05/28
+
 # coding:utf8  
 import sys  
 # import openpyxl
@@ -9,22 +12,25 @@ import logging
 import yaml
 import traceback
 
-# pyinstaller -F filename.py 打包生成 exe
+# pyinstaller -F filename.py -- 打包生成 exe
 
 # 按征信要求，生成24个月的还款状态
 
-f = open('Conf.yaml', encoding='utf-8')
-conf = yaml.load(f, Loader=yaml.FullLoader)
+myname  = sys.argv[0]
 
-print('conf---')
-print(conf)
+f       = open('Conf-'+myname+'.yaml', encoding='utf-8')
+conf    = yaml.load(f, Loader=yaml.FullLoader)
+
+# print('conf---')
+# print(conf)
 
 # 设置日志
 LOG_FORMAT = conf['LOG']['LOG_FORMAT'] # "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = conf['LOG']['DATE_FORMAT'] # "%m/%d/%Y %H:%M:%S %p"
 LOG_PATH = conf['LOG']['LOG_PATH']
 logging.basicConfig(filename=LOG_PATH + 'log.log', level=logging.INFO, format=LOG_FORMAT, datefmt=DATE_FORMAT)
-logging.info("starting...")
+logging.info("start..." + myname)
+print("start..."+ myname)
 
 # 数据库信息
 host = conf['DB']['HOST'] # '172.16.0.52'  
@@ -57,8 +63,8 @@ try:
     results = cursor.fetchall()
     fields = cursor.description
 
-    print('fields: ')
-    print(fields)
+    logging.info('fields: ')
+    logging.info(fields)
 
     i = 2  # 注意：'cell'函数中行列起始值为1
     cur_project_id = ''
@@ -98,15 +104,15 @@ try:
                             # c_str = c_str + ('N' if(p - c - 1==0) else str(p - c - 1))
                             i = i + 1
                     # logging.info('-------i: ' + str(i) + ' , c_str:' + c_str)
-                print('c_str:' + c_str)
-                # logging.info('c_str:' + c_str)
+                # print('c_str:' + c_str)
+                logging.info('c_str:' + c_str)
             
 
                 for m in range(len(over_duration_period)):
                     c_s = orig_str[m+1:len(orig_str)] + c_str[:m+1]
                     m24_status.append(c_s)
-                    print(c_s)
-                    # logging.info(c_s)
+                    # print(c_s)
+                    logging.info(c_s)
 
                     # 写入数据库
                     update_str = 'UPDATE tmp_overdue SET REPAY_MONTH_24_STAT="' +  c_s + '" WHERE ProjectID = "' + cur_project_id + '" AND Peroid = ' + str(periods[m])
@@ -116,7 +122,7 @@ try:
 
             # 初始化下一个新的项目
             cur_project_id = line[0]
-            print('cur_project: ' + cur_project_id)
+            logging.info('cur_project: ' + cur_project_id)
             periods = []
             over_duration_period = []
             m24_status = []
@@ -128,11 +134,11 @@ try:
         over_duration_period.append(dur_period)  # 最大影响期数
         LOAN_STAT.append(line[3])
 
-        print('project:' + str(line[0]) + ' - period:' + str(line[1]) + '- dur_period:' + str(dur_period))
-        # logging.info('project:' + str(line[0]) + ' - period:' + str(line[1]) + '- dur_period:' + str(dur_period))
+        # print('project:' + str(line[0]) + ' - period:' + str(line[1]) + '- dur_period:' + str(dur_period))
+        logging.info('project:' + str(line[0]) + ' - period:' + str(line[1]) + '- dur_period:' + str(dur_period))
     
     # 处理最后一个项目
-    print('--- deal with project: ' + cur_project_id)
+    logging.info('--- deal with project: ' + cur_project_id)
     if len(over_duration_period)>0:
         c_str = ''
         i = 0
@@ -155,15 +161,15 @@ try:
                     # c_str = c_str + ('N' if(p - c - 1==0) else str(p - c - 1))
                     i = i + 1
             # logging.info('-------i: ' + str(i) + ' , c_str:' + c_str)
-        print('c_str:' + c_str)
-        # logging.info('c_str:' + c_str)
+        # print('c_str:' + c_str)
+        logging.info('c_str:' + c_str)
     
 
         for m in range(len(over_duration_period)):
             c_s = orig_str[m+1:len(orig_str)] + c_str[:m+1]
             m24_status.append(c_s)
-            print(c_s)
-            # logging.info(c_s)
+            # print(c_s)
+            logging.info(c_s)
 
             # 写入数据库
             update_str = 'UPDATE tmp_overdue SET REPAY_MONTH_24_STAT="' +  c_s + '" WHERE ProjectID = "' + cur_project_id + '" AND Peroid = ' + str(periods[m])
@@ -184,4 +190,6 @@ update_cursor.close
 cursor.close
 conn.close
 logging.info("closeing database: done ")
-print('--end')
+
+logging.info("done!")
+print("done!")

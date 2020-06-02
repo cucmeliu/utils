@@ -10,8 +10,10 @@ import yaml
 import traceback
 
 # 将一个表的数据从一个库转到另一个库
+myname = sys.argv[0]
 
-f       = open('Conf-mysql2mysql.yaml', encoding='utf-8')
+f       = open('Conf-'+myname+'.yaml', encoding='utf-8')
+# f       = open('Conf-mysql2mysql.yaml', encoding='utf-8')
 conf    = yaml.load(f, Loader=yaml.FullLoader)
 
 print('conf---')
@@ -21,9 +23,9 @@ print(conf)
 LOG_FORMAT  = conf['LOG']['LOG_FORMAT'] # "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = conf['LOG']['DATE_FORMAT'] # "%m/%d/%Y %H:%M:%S %p"
 LOG_PATH    = conf['LOG']['LOG_PATH']
-
 logging.basicConfig(filename=LOG_PATH + 'log.log', level=logging.INFO, format=LOG_FORMAT, datefmt=DATE_FORMAT)
-logging.info("starting...")
+logging.info("start..."+myname)
+print("start..."+myname)
 
 # global参数
 IS_TRUNC_DEST = conf['GLOBAL']['IS_TRUNC_DEST']
@@ -90,4 +92,5 @@ src_cursor.close
 src_db.close
 dest_db.close
 logging.info("closeing database: done ")
-print('end---')
+logging.info("done!")
+print("done!")
