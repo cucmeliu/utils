@@ -17,7 +17,7 @@ DB:
 
 # 导入的Excel
 EXCEL:    
-    FILE_PATH: 'D:\download\'
+    FILE_PATH: '\\\\w12shdc\\汽车事业部_计财部\\蚂蚁旺金业务\\'
     # FILE_BASE: 'STUDENT_'
     FILE_NAME: '2020年网商银行流水.xlsx'
     SHEET_NAME: 'Sheet1'

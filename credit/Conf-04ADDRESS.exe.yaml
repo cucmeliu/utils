@@ -1,4 +1,5 @@
-﻿# 日志
+﻿# （居住信息）从mysql 复制到 ms sql数据库
+# 日志
 LOG:
     LOG_FORMAT: '%(asctime)s - %(levelname)s - %(message)s'
     DATE_FORMAT: '%m/%d/%Y %H:%M:%S %p'
@@ -6,7 +7,7 @@ LOG:
 
 GLOBAL: 
     # 是否先清空目标表
-    IS_TRUNC_DEST: true
+    IS_TRUNC_DEST: false
 
 # src数据库
 SRC_DB:
@@ -39,7 +40,7 @@ DEST_DB:
     DB:     test_ccrs_source
     # 地址
     TABLE:  V_P_CRS_ADRESS_INFO
-    SQL:    INSERT INTO V_P_CRS_ADRESS_INFO  VALUES (%s, %s, %s, %s, %s)
+    SQL:    INSERT INTO V_P_CRS_ADRESS_INFO (CUSTID, FINORGCODE, HOME_ADDR_DTL, HOME_ADDR_ZIP_CD, HOME_ADDR_STAT_CD, bizType)  VALUES (%s, %s, %s, %s, %s, 2)
     # 职业
     # TABLE:  V_P_CRS_PROFESSION_INFO
     # SQL:    INSERT INTO V_P_CRS_PROFESSION_INFO  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)

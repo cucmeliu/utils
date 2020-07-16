@@ -1,4 +1,5 @@
-﻿# 日志
+﻿# 生成24个月状态
+# 日志
 LOG:
     LOG_FORMAT: '%(asctime)s - %(levelname)s - %(message)s'
     DATE_FORMAT: '%m/%d/%Y %H:%M:%S %p'

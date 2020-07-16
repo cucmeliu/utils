@@ -1,4 +1,6 @@
-﻿# 日志
+﻿# 将一个数据表从一个mysql 库 移动到另一个mysql 库
+# 本项目为复制本期需要上报身份/居住/职业信息的项目（即新增加的）
+# 日志
 LOG:
     LOG_FORMAT: '%(asctime)s - %(levelname)s - %(message)s'
     DATE_FORMAT: '%m/%d/%Y %H:%M:%S %p'

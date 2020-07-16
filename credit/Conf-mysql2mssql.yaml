@@ -1,4 +1,5 @@
-﻿# 日志
+﻿# 从mysql 复制到 ms sql数据库
+# 日志
 LOG:
     LOG_FORMAT: '%(asctime)s - %(levelname)s - %(message)s'
     DATE_FORMAT: '%m/%d/%Y %H:%M:%S %p'
@@ -6,7 +7,7 @@ LOG:
 
 GLOBAL: 
     # 是否先清空目标表
-    IS_TRUNC_DEST: true
+    IS_TRUNC_DEST: false
 
 # src数据库
 SRC_DB:

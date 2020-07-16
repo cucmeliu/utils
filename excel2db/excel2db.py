@@ -10,13 +10,10 @@ import logging
 import yaml
 import traceback
 
-# pyinstaller -F filename.py 打包生成 exe
+# pyinstaller -F excel2db.py 打包生成 exe
 
 f = open('Conf.yaml', encoding='utf-8')
 conf = yaml.load(f, Loader=yaml.FullLoader)
-
-print('conf---')
-print(conf)
 
 # 设置日志
 LOG_FORMAT  = conf['LOG']['LOG_FORMAT'] # "%(asctime)s - %(levelname)s - %(message)s"
@@ -24,7 +21,6 @@ DATE_FORMAT = conf['LOG']['DATE_FORMAT'] # "%m/%d/%Y %H:%M:%S %p"
 LOG_PATH    = conf['LOG']['LOG_PATH']
 logging.basicConfig(filename=LOG_PATH + 'log.log', level=logging.INFO, format=LOG_FORMAT, datefmt=DATE_FORMAT)
 logging.info("starting...")
-
 # 数据库信息
 host    = conf['DB']['HOST'] # '172.16.0.52'  
 user    = conf['DB']['USER'] # 'query01'  
@@ -35,12 +31,13 @@ query   = conf['DB']['SQL']
 
 # excel 信息
 in_file     = conf['EXCEL']['FILE_PATH'] + conf['EXCEL']['FILE_NAME']
+logging.info(in_file)
 sheet_name  = conf['EXCEL']['SHEET_NAME'] 
+
 wb2         = load_workbook(in_file)
 ws          = wb2[sheet_name]
 # 
 logging.info("IMPORT FILE: " + in_file)
-
 # 读取数据库
 logging.info("connect to database ")
 logging.info("Query: " + query)

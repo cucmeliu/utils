@@ -16,14 +16,16 @@ f       = open('Conf-'+myname+'.yaml', encoding='utf-8')
 # f       = open('Conf-mysql2mysql.yaml', encoding='utf-8')
 conf    = yaml.load(f, Loader=yaml.FullLoader)
 
-print('conf---')
-print(conf)
+# print('conf---')
+# print(conf)
 
 # 设置日志
 LOG_FORMAT  = conf['LOG']['LOG_FORMAT'] # "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = conf['LOG']['DATE_FORMAT'] # "%m/%d/%Y %H:%M:%S %p"
 LOG_PATH    = conf['LOG']['LOG_PATH']
 logging.basicConfig(filename=LOG_PATH + 'log.log', level=logging.INFO, format=LOG_FORMAT, datefmt=DATE_FORMAT)
+
+logging.info("------------------")
 logging.info("start..."+myname)
 print("start..."+myname)
 

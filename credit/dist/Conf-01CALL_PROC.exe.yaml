@@ -1,4 +1,6 @@
-﻿# 日志
+﻿# 调用存储过程
+
+# 日志
 LOG:
     LOG_FORMAT: '%(asctime)s - %(levelname)s - %(message)s'
     DATE_FORMAT: '%m/%d/%Y %H:%M:%S %p'
