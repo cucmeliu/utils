@@ -1,0 +1,20 @@
+﻿# 调用存储过程
+
+# 日志
+LOG:
+    LOG_FORMAT: '%(asctime)s - %(levelname)s - %(message)s'
+    DATE_FORMAT: '%m/%d/%Y %H:%M:%S %p'
+    LOG_PATH: './'
+
+# GLOBAL: 
+#     # 是否先清空目标表
+#     IS_TRUNC_DEST: true
+
+# src数据库
+SRC_DB:
+    HOST:   172.16.0.50
+    USER:   root
+    PWD:    mysql
+    DB:     small_core
+    SP:     sp_credit_wind_up
+    ARGS:   arg1, arg2, arg3

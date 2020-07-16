@@ -1,0 +1,55 @@
+﻿# （特殊事件）从mysql 复制到 ms sql数据库
+# 日志
+LOG:
+    LOG_FORMAT: '%(asctime)s - %(levelname)s - %(message)s'
+    DATE_FORMAT: '%m/%d/%Y %H:%M:%S %p'
+    LOG_PATH: './'
+
+GLOBAL: 
+    # 是否先清空目标表
+    IS_TRUNC_DEST: false
+
+# src数据库
+SRC_DB:
+    HOST:   172.16.0.50
+    USER:   root
+    PWD:    mysql
+    DB:     small_core
+    # 地址
+    # TABLE:  V_CREDIT_ADDRESS
+    # SQL:    SELECT * FROM V_CREDIT_ADDRESS 
+    # 职业
+    # TABLE:  V_CREDIT_OCCUPATION
+    # SQL:    SELECT * FROM V_CREDIT_OCCUPATION 
+    # 身份
+    # TABLE:  V_CREDIT_IDENTITY
+    # SQL:    SELECT * FROM V_CREDIT_IDENTITY 
+    # 基础
+    # TABLE:  V_CREDIT_LOAN_DETAIL
+    # SQL:    SELECT * FROM V_CREDIT_LOAN_DETAIL 
+    # 特殊交易
+    TABLE:  V_CREDIT_SPEC_EVENT
+    SQL:    SELECT BUSINESS_NO, FINORGCODE, SPEC_EVENT_CD, OCCURDATE, EXTENT_MONTHS, EVENT_AMT, EVENT_DTL, bizType FROM V_CREDIT_SPEC_EVENT 
+
+
+# dest数据库
+DEST_DB:
+    HOST:   172.16.0.9
+    USER:   ccrs_xd
+    PWD:    ccrs_xd
+    DB:     ccrs_source
+    # 地址
+    # TABLE:  V_P_CRS_ADRESS_INFO
+    # SQL:    INSERT INTO V_P_CRS_ADRESS_INFO  VALUES (%s, %s, %s, %s, %s)
+    # 职业
+    # TABLE:  V_P_CRS_PROFESSION_INFO
+    # SQL:    INSERT INTO V_P_CRS_PROFESSION_INFO  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    # 身份
+    # TABLE:  V_P_CRS_IDENTITY_INFO
+    # SQL:    INSERT INTO V_P_CRS_IDENTITY_INFO  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    # 基础
+    # TABLE:  V_P_CRS_LOAN_DTL
+    # SQL:    INSERT INTO V_P_CRS_LOAN_DTL  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    # 特殊交易
+    TABLE:  V_P_CRS_LOAN_SPEC_EVENT
+    SQL:    INSERT INTO V_P_CRS_LOAN_SPEC_EVENT (BUSINESS_NO, FINORGCODE, SPEC_EVENT_CD, OCCURDATE, EXTENT_MONTHS, EVENT_AMT, EVENT_DTL, bizType)  VALUES (%s, %s, %s, %s, %s, %s, %s, %s)

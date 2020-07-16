@@ -1,0 +1,20 @@
+﻿# 日志
+LOG:
+    LOG_FORMAT: '%(asctime)s - %(levelname)s - %(message)s'
+    DATE_FORMAT: '%m/%d/%Y %H:%M:%S %p'
+    LOG_PATH: './'
+
+# 数据库
+DB:
+    HOST:  172.16.0.50
+    USER: root
+    PWD:  mysql
+    DB: small_core
+    SQL: SELECT ProjectID, Peroid, over_day_count, LOAN_STAT from tmp_overdue  WHERE  over_day_count is not NULL and Peroid <> 0 order by ProjectID, Peroid; 
+
+# 导出的Excel
+EXCEL:
+    SHEET_NAME: '学生信息'
+    OUT_PATH: 'D:\'
+    FILE_BASE: 'STUDENT_'
+    
