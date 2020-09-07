@@ -38,11 +38,12 @@ SRC_DB      = conf['SRC_DB']['DB'] # 'small_core'
 SRC_SP      = conf['SRC_DB']['SP'] # 'tmp_xxx' 
 SRC_ARGS    =  conf['SRC_DB']['ARGS']
 
+
 # 读取数据库
 logging.info("connect to database ")
 db      = MySQLdb.connect(SRC_HOST, SRC_USER, SRC_PWD, SRC_DB, charset='utf8') 
 cursor  = db.cursor(MySQLdb.cursors.DictCursor)  
-cursor.callproc(SRC_SP) # , *SRC_ARGS参数为存储过程名称和存储过程接收的参数
+cursor.callproc(SRC_SP,args=('0')) # , *SRC_ARGS参数为存储过程名称和存储过程接收的参数
 db.commit()
 # 获取数据
 # data = cursor.fetchall()

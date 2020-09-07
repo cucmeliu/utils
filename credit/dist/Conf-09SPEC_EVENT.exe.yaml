@@ -29,7 +29,7 @@ SRC_DB:
     # SQL:    SELECT * FROM V_CREDIT_LOAN_DETAIL 
     # 特殊交易
     TABLE:  V_CREDIT_SPEC_EVENT
-    SQL:    SELECT BUSINESS_NO, FINORGCODE, SPEC_EVENT_CD, OCCURDATE, EXTENT_MONTHS, EVENT_AMT, EVENT_DTL, bizType FROM V_CREDIT_SPEC_EVENT 
+    SQL:    SELECT * FROM V_CREDIT_SPEC_EVENT 
 
 
 # dest数据库
@@ -52,4 +52,4 @@ DEST_DB:
     # SQL:    INSERT INTO V_P_CRS_LOAN_DTL  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     # 特殊交易
     TABLE:  V_P_CRS_LOAN_SPEC_EVENT
-    SQL:    INSERT INTO V_P_CRS_LOAN_SPEC_EVENT (BUSINESS_NO, FINORGCODE, SPEC_EVENT_CD, OCCURDATE, EXTENT_MONTHS, EVENT_AMT, EVENT_DTL, bizType)  VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    SQL:    INSERT INTO V_P_CRS_LOAN_SPEC_EVENT (BUSINESS_NO, FINORGCODE, SPEC_EVENT_CD, OCCURDATE, EXTENT_MONTHS, EVENT_AMT, EVENT_DTL, bizType)  VALUES (%s, %s, %s, %s, %s, %s, %s,  %s)

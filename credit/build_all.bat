@@ -8,43 +8,44 @@ del dist\*.exe
 del dist\*.bat
 del dist\*.yaml
 
+
 echo "copy *.exe *.bat *.yaml to dist"
 copy run_credit.bat dist\
 copy *.yaml dist\
 
 echo 
 echo "------------------------"
-echo "building call_process..."
-pyinstaller -F call_process.py
+echo "building c01call_process..."
+pyinstaller -F c01call_process.py
 REM sp_gen_credit
-copy dist\call_process.exe dist\01GEN_CREDIT.exe
+copy dist\c01call_process.exe dist\01GEN_CREDIT.exe
 REM sp_return_project
-copy dist\call_process.exe dist\03RETURN_PROJECT.exe
+copy dist\c01call_process.exe dist\03RETURN_PROJECT.exe
 REM sp_credit_wind_up
-ren dist\call_process.exe 10CREDIT_WIND_UP.exe
+ren dist\c01call_process.exe 10CREDIT_WIND_UP.exe
 
 echo " "
 echo "------------------------"
-echo "building MONTH_24_STAT..."
-pyinstaller -F MONTH_24_STAT.py
-ren dist\MONTH_24_STAT.exe 02BUILD24STATE.exe
+echo "building c02build_24_state..."
+pyinstaller -F c02build_24_state.py
+ren dist\c02build_24_state.exe 02BUILD24STATE.exe
 
 echo " "
 echo "------------------------"
-echo "building mysql2mysql..."
-pyinstaller -F mysql2mysql.py
-ren dist\mysql2mysql.exe 03PRJ2APPLY.exe
+echo "building c03mysql2mysql..."
+pyinstaller -F c03mysql2mysql.py
+ren dist\c03mysql2mysql.exe 04PRJ2APPLY.exe
 
 echo " "
 echo "------------------------"
-echo "building mysql2mssql..."
-pyinstaller -F mysql2mssql.py
+echo "building c04mysql2mssql..."
+pyinstaller -F c04mysql2mssql.py
 
-copy dist\mysql2mssql.exe dist\04ADDRESS.exe
-copy dist\mysql2mssql.exe dist\05IDENTITY.exe
-copy dist\mysql2mssql.exe dist\06LOAN_DETAIL.exe
-copy dist\mysql2mssql.exe dist\07OCCUPATION.exe
-ren dist\mysql2mssql.exe 08SPEC_EVENT.exe
+copy dist\c04mysql2mssql.exe dist\05ADDRESS.exe
+copy dist\c04mysql2mssql.exe dist\06IDENTITY.exe
+copy dist\c04mysql2mssql.exe dist\07OCCUPATION.exe
+copy dist\c04mysql2mssql.exe dist\08LOAN_DETAIL.exe
+ren dist\c04mysql2mssql.exe 09SPEC_EVENT.exe
 
 
 echo " "

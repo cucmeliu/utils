@@ -13,7 +13,7 @@ DB:
     DB: small_core
     SQL: SELECT ProjectID, Peroid, over_day_count, LOAN_STAT from tmp_overdue  WHERE  over_day_count is not NULL and Peroid <> 0 order by ProjectID, Peroid; 
 
-# 导出的Excel
+# 导出的Excel，不需要的
 EXCEL:
     SHEET_NAME: '学生信息'
     OUT_PATH: 'D:\'

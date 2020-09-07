@@ -16,5 +16,5 @@ SRC_DB:
     USER:   root
     PWD:    mysql
     DB:     small_core
-    SP:     sp_return_project
-    ARGS:   arg1, arg2, arg3
+    SP:     sp_credit_wind_up
+    ARGS:   0

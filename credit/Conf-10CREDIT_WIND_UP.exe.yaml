@@ -17,4 +17,4 @@ SRC_DB:
     PWD:    mysql
     DB:     small_core
     SP:     sp_credit_wind_up
-    ARGS:   arg1, arg2, arg3
+    ARGS:   0

@@ -102,7 +102,7 @@ try:
                         i = i + 1
                     else:
                         for c in range(p):
-                            c_str = c_str + str(c+1)
+                            c_str = c_str + str( c+1 if c<=6 else 7 )
                             # c_str = c_str + ('N' if(p - c - 1==0) else str(p - c - 1))
                             i = i + 1
                     # logging.info('-------i: ' + str(i) + ' , c_str:' + c_str)
@@ -159,7 +159,7 @@ try:
                 i = i + 1
             else:
                 for c in range(p):
-                    c_str = c_str + str(c+1)
+                    c_str = c_str + str( c+1 if c<=6 else 7 )
                     # c_str = c_str + ('N' if(p - c - 1==0) else str(p - c - 1))
                     i = i + 1
             # logging.info('-------i: ' + str(i) + ' , c_str:' + c_str)
